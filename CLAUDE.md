@@ -15,6 +15,26 @@ Detailed specifications are located in `project_standards/`:
 - **UI_UX Design Document.md** - Screen layouts, user flows, mockups
 - **IMPLEMENTATION_PLAN.md** - Phased development roadmap
 
+## CRITICAL NOTES
+
+### Security: .gitignore Maintenance
+**ALWAYS check and update `.gitignore` when adding new frameworks, libraries, or components.** Ensure that:
+- Environment files (`.env`, `.env.local`, etc.) are excluded
+- API keys and secrets are never committed
+- Cloud provider configuration files are excluded
+- Framework-specific ignore patterns are added (e.g., `.next/`, `target/`, `node_modules/`)
+
+Review `.gitignore` before every commit that adds new dependencies or configuration.
+
+### Agent Usage for Complex Tasks
+**When working on multi-step or specialized tasks, ALWAYS create agents with specific expertise for those tasks.** Use the Task tool with appropriate subagent types:
+- Launch agents proactively for complex implementations
+- Provide agents with detailed context about what needs to be accomplished
+- Use multiple agents in parallel when tasks are independent
+- Ensure agents have the right expertise (e.g., Rust for backend, React for UI, Next.js for generator)
+
+This improves code quality, reduces errors, and leverages specialized knowledge for each component of the system.
+
 ## Architecture
 
 ### Monorepo Structure
