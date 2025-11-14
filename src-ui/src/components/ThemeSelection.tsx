@@ -5,7 +5,7 @@ import { generateWebsite, getAvailableThemes } from '../utils/tauri';
 interface ThemeSelectionProps {
   portfolioData: PortfolioData;
   onThemeSelect: (themeName: string) => void;
-  onGenerate: () => void;
+  onGenerate: (downloadUrl: string) => void;
   onBack: () => void;
   showLoading: (message: string) => void;
   hideLoading: () => void;
@@ -25,7 +25,6 @@ export default function ThemeSelection({
   const [selectedTheme, setSelectedTheme] = useState(
     portfolioData.theme.name || 'onyx'
   );
-  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   useEffect(() => {
     loadThemes();
@@ -53,14 +52,8 @@ export default function ThemeSelection({
   };
 
   const updatePreview = () => {
-    // Create a preview data URL with current portfolio data
-    // For now, we'll just show a placeholder
-    const previewData = {
-      ...portfolioData,
-      theme: { name: selectedTheme },
-    };
-    // In a real implementation, this would generate a preview URL
-    setPreviewUrl(JSON.stringify(previewData, null, 2));
+    // Preview updates are handled by the component re-render
+    // No action needed here, but keeping for future implementation
   };
 
   const handleThemeSelect = (themeName: string) => {
@@ -77,11 +70,11 @@ export default function ThemeSelection({
         theme: { name: selectedTheme },
       };
 
-      await generateWebsite(dataWithTheme, selectedTheme);
+      const downloadUrl = await generateWebsite(dataWithTheme, selectedTheme);
 
       hideLoading();
       showToast('Website generated successfully!', 'success');
-      onGenerate();
+      onGenerate(downloadUrl);
     } catch (error) {
       hideLoading();
       showToast(

@@ -263,9 +263,10 @@ export default function Settings({ onClose, showToast }: SettingsProps) {
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800">
-                  <strong>Note:</strong> API keys are stored securely in your
-                  system's credential manager and are never sent to any third
-                  party except the respective AI provider.
+                  <strong>Note:</strong> API keys are stored securely on the
+                  server and are encrypted. They are never sent to any third
+                  party except the respective AI provider for processing your
+                  requests.
                 </p>
               </div>
             </div>

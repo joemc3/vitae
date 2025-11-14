@@ -2,6 +2,10 @@
 /src-tauri/target/
 /src-tauri/Cargo.lock
 
+# Rust API Backend
+/src-api/target/
+/src-api/Cargo.lock
+
 # Node / npm
 node_modules/
 npm-debug.log*
@@ -46,3 +50,22 @@ user-data/
 
 # OS
 Thumbs.db
+
+# Docker runtime
+docker-images/
+.docker/
+docker-volumes/
+*.tar.gz
+*.tar
+
+# Docker Compose overrides (local development)
+docker-compose.override.yml
+
+# Don't ignore Dockerfiles and docker-compose files (they should be committed)
+!Dockerfile
+!docker-compose*.yml
+!.dockerignore
+
+# PostgreSQL data (when running locally)
+postgres-data/
+pgdata/
