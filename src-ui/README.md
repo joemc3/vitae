@@ -1,49 +1,26 @@
-# Professional Website Builder - Desktop UI
+# Professional Website Builder - Web UI
 
-This is the React + TypeScript + Vite frontend application for the Professional Website Builder desktop app.
+This is the React-based web application for the Professional Website Builder. It has been converted from a Tauri desktop application to a standalone web application.
 
-## Tech Stack
+## Architecture
+
+The application is a React SPA (Single Page Application) that communicates with a backend API server via HTTP/REST.
+
+### Key Technologies
 
 - **React 18** - UI framework
-- **TypeScript** - Type safety
+- **TypeScript** - Type-safe JavaScript
+- **React Router DOM** - Client-side routing
+- **Axios** - HTTP client for API calls
+- **Tailwind CSS** - Utility-first CSS framework
 - **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling framework
-- **Tauri API** - Desktop integration and communication with Rust backend
-- **React Router** - Client-side routing
 
-## Project Structure
-
-```
-src-ui/
-├── src/
-│   ├── components/           # React components for each screen
-│   │   ├── FileIngestion.tsx      # Screen 1: File upload & tier selection
-│   │   ├── Settings.tsx           # Screen 2: API key configuration
-│   │   ├── MainEditor.tsx         # Screen 3: Content editing forms
-│   │   ├── ThemeSelection.tsx     # Screen 4: Theme picker with preview
-│   │   └── GenerationSuccess.tsx  # Screen 5: Success screen
-│   ├── types/
-│   │   └── portfolio.ts      # TypeScript interfaces matching Rust data structures
-│   ├── utils/
-│   │   └── tauri.ts          # Tauri API command wrappers
-│   ├── App.tsx               # Main app component with routing
-│   ├── App.css               # App-specific styles
-│   ├── main.tsx              # Application entry point
-│   └── index.css             # Global styles with Tailwind
-├── index.html                # HTML entry point
-├── package.json              # Dependencies and scripts
-├── tsconfig.json             # TypeScript configuration
-├── vite.config.ts            # Vite configuration for Tauri
-├── tailwind.config.js        # Tailwind CSS configuration
-└── postcss.config.js         # PostCSS configuration
-```
-
-## Getting Started
+## Setup
 
 ### Prerequisites
 
-- Node.js 20.x or higher
-- npm 10.x or higher
+- Node.js v20.x or higher
+- npm v10.x or higher
 
 ### Installation
 
@@ -52,30 +29,191 @@ src-ui/
 npm install
 ```
 
-### Development
+### Environment Configuration
+
+Create environment files for your deployment:
+
+1. For development, copy `.env.example` to `.env.development`:
+   ```bash
+   cp .env.example .env.development
+   ```
+
+2. Update the API URL in `.env.development`:
+   ```
+   VITE_API_URL=http://localhost:3001
+   ```
+
+3. For production, create `.env.production`:
+   ```
+   VITE_API_URL=https://your-production-domain.com
+   ```
+
+## Development
 
 ```bash
-# Run the dev server (standalone)
+# Run development server (with hot reload)
 npm run dev
 
-# Run with Tauri (full app)
-cd ..
-npm run tauri dev
+# The app will be available at http://localhost:5173
 ```
 
-The dev server will start on `http://localhost:5173`.
+The dev server includes a proxy configuration that forwards `/api/*` requests to `http://localhost:3001` (configurable in `vite.config.ts`).
 
-### Building
+## Building for Production
 
 ```bash
-# Build for production
+# Build the application
 npm run build
 
-# Preview production build
+# Preview production build locally
 npm run preview
 ```
 
-### Linting & Formatting
+The built files will be in the `dist/` directory, ready to be deployed to any static hosting service or served by your backend.
+
+## API Integration
+
+The application expects a backend API server running at the URL specified in the environment variables. The API should implement the following endpoints:
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user
+- `GET /api/auth/me` - Get current user
+
+### File Management
+- `POST /api/files/ingest` - Upload files (multipart/form-data)
+- `GET /api/files/aggregated-text` - Get extracted text from files
+
+### AI Processing
+- `POST /api/ai/process` - Process documents with AI
+
+### Website Generation
+- `POST /api/website/generate` - Generate website from portfolio data
+
+### Settings
+- `POST /api/settings/api-key` - Save API key
+- `GET /api/settings/api-key/:provider` - Get API key
+- `DELETE /api/settings/api-key/:provider` - Delete API key
+- `POST /api/settings/test-connection` - Test API connection
+- `POST /api/settings/local-endpoint` - Save local AI endpoint
+- `GET /api/settings/local-endpoint` - Get local AI endpoint
+
+### Themes
+- `GET /api/themes` - Get available themes
+
+## Authentication
+
+The application uses JWT-based authentication:
+
+- Tokens are stored in `localStorage` as `authToken`
+- All API requests include the token in the `Authorization` header
+- Protected routes redirect to `/login` if user is not authenticated
+- 401 responses automatically clear the token and redirect to login
+
+## Project Structure
+
+```
+src-ui/
+├── src/
+│   ├── components/          # React components
+│   │   ├── Login.tsx        # Login page
+│   │   ├── Register.tsx     # Registration page
+│   │   ├── ProtectedRoute.tsx  # Auth guard
+│   │   ├── FileIngestion.tsx   # File upload
+│   │   ├── MainEditor.tsx      # Portfolio editor
+│   │   ├── ThemeSelection.tsx  # Theme picker
+│   │   ├── GenerationSuccess.tsx  # Success page
+│   │   └── Settings.tsx        # Settings modal
+│   ├── contexts/
+│   │   └── AuthContext.tsx  # Authentication context
+│   ├── services/
+│   │   └── api.ts           # API client and functions
+│   ├── utils/
+│   │   └── tauri.ts         # API wrappers (legacy naming)
+│   ├── types/
+│   │   └── portfolio.ts     # TypeScript types
+│   ├── App.tsx              # Main app component with routing
+│   └── main.tsx             # App entry point
+├── .env.development         # Development environment variables
+├── .env.production          # Production environment variables
+├── .env.example             # Example environment file
+├── vite.config.ts           # Vite configuration
+└── package.json             # Dependencies and scripts
+```
+
+## Application Flow
+
+1. **Login/Register** (`/login`, `/register`) - User authentication
+2. **File Ingestion** (`/app`) - Users upload documents and choose processing tier
+3. **Main Editor** (`/app/editor`) - Users review and edit portfolio content
+4. **Theme Selection** (`/app/themes`) - Users choose a visual theme with preview
+5. **Generation Success** (`/app/success`) - Users download or preview their website
+
+## Deployment
+
+### Static Hosting (Netlify, Vercel, etc.)
+
+1. Build the application: `npm run build`
+2. Deploy the `dist/` directory
+3. Configure environment variables in your hosting platform
+4. Set up redirects for SPA routing (all routes → `/index.html`)
+
+### Self-Hosted
+
+1. Build the application: `npm run build`
+2. Serve the `dist/` directory with any web server (nginx, Apache, etc.)
+3. Configure the web server to handle SPA routing
+4. Set the `VITE_API_URL` environment variable before building
+
+Example nginx configuration:
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+## Migration from Tauri Desktop App
+
+This web application was converted from a Tauri desktop application. Key changes:
+
+1. **Removed Dependencies**:
+   - `@tauri-apps/api` - Replaced with HTTP API calls via axios
+
+2. **Added Dependencies**:
+   - `axios` - HTTP client for API communication
+
+3. **Architecture Changes**:
+   - File selection: Tauri dialog → HTML file input
+   - File upload: Local paths → FormData multipart upload
+   - API calls: Tauri invoke → HTTP REST API
+   - Authentication: OS-level → JWT with server session
+   - Storage: OS keychain → Server-side encrypted storage
+   - Website download: File system → HTTP download URL
+
+4. **New Features**:
+   - User authentication (login/register)
+   - Multi-user support
+   - Cloud-based file storage
+   - Session management
+
+## Linting and Formatting
 
 ```bash
 # Run ESLint
@@ -85,104 +223,9 @@ npm run lint
 npm run format
 ```
 
-## Application Flow
+## Notes
 
-1. **File Ingestion** (`/`) - Users drag & drop or select documents, then choose processing tier (Manual/Cloud AI/Local AI)
-2. **Main Editor** (`/editor`) - Users review and edit portfolio content across 6 sections (Profile, Contact, Work, Projects, Education, Skills)
-3. **Theme Selection** (`/themes`) - Users choose a visual theme and see a live preview
-4. **Generation Success** (`/success`) - Users can open the generated website folder or preview in browser
-
-## Key Features
-
-### Tauri Integration
-
-The app communicates with the Rust backend via Tauri commands:
-
-- `ingest_files` - Process uploaded documents
-- `get_aggregated_text` - Get extracted text from documents
-- `get_json_from_ai` - AI-powered content generation
-- `generate_website` - Build static website
-- `save_api_key` / `get_api_key` - Secure API key storage
-- `test_api_connection` - Verify AI provider connections
-
-### State Management
-
-Application state is managed in `App.tsx` and passed down via props:
-- Portfolio data (profile, contact, experience, etc.)
-- Processing tier selection
-- Ingested files list
-- Theme selection
-
-### Styling
-
-Uses Tailwind CSS with custom utility classes:
-- `.btn-primary` - Primary action buttons
-- `.btn-secondary` - Secondary action buttons
-- `.btn-outline` - Outlined buttons
-- `.input-field` - Text input fields
-- `.textarea-field` - Textarea fields
-- `.card` - Card container
-- `.label` - Form labels
-
-### Loading States
-
-Global loading overlay managed in `App.tsx`:
-```typescript
-showLoading('Processing documents...');
-// ... async operation
-hideLoading();
-```
-
-### Toast Notifications
-
-Transient notifications for user feedback:
-```typescript
-showToast('Success message', 'success');
-showToast('Error message', 'error');
-showToast('Warning message', 'warning');
-```
-
-## TypeScript Types
-
-All data structures match the backend Rust types and the Data Structure Specification:
-
-- `PortfolioData` - Complete portfolio structure
-- `Profile` - User profile information
-- `Contact` - Contact details and social links
-- `WorkExperience` - Job history
-- `Project` - Project portfolio items
-- `Education` - Educational background
-- `SkillCategory` - Grouped skills
-- `Theme` - Theme configuration
-
-## Development Notes
-
-### Adding New Components
-
-1. Create component in `src/components/`
-2. Import and use in `App.tsx` or other components
-3. Add route if needed in `App.tsx`
-
-### Adding New Tauri Commands
-
-1. Define command wrapper in `src/utils/tauri.ts`
-2. Add proper TypeScript types
-3. Handle errors appropriately
-4. Implement corresponding Rust command in `src-tauri/`
-
-### Styling Guidelines
-
-- Use Tailwind utility classes first
-- Create custom classes in `index.css` for reusable patterns
-- Follow existing color scheme (primary blue)
-- Maintain consistent spacing (gap-4, p-6, etc.)
-
-## Browser Support
-
-The app targets modern browsers as specified in Vite config:
-- Chrome 105+ (Windows)
-- Safari 13+ (macOS)
-
-## License
-
-Part of the Professional Website Builder project.
+- API keys are stored on the server (encrypted) instead of OS keychain
+- Files are uploaded to the server instead of being accessed locally
+- Generated websites are downloaded as ZIP files instead of being written to local filesystem
+- Authentication is required to access the application

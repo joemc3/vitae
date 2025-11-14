@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { open } from '@tauri-apps/api/dialog';
 import {
   ingestFiles,
   getAggregatedText,
@@ -7,13 +6,13 @@ import {
   getApiKey,
   getLocalEndpoint,
 } from '../utils/tauri';
-import { ProcessingTier, PortfolioData, FileInfo } from '../types/portfolio';
+import { ProcessingTier, PortfolioData } from '../types/portfolio';
 
 interface FileIngestionProps {
   selectedTier: ProcessingTier;
   onTierChange: (tier: ProcessingTier) => void;
-  ingestedFiles: string[];
-  onFilesIngested: (files: string[]) => void;
+  ingestedFiles: File[];
+  onFilesIngested: (files: File[]) => void;
   onNext: () => void;
   showLoading: (message: string) => void;
   hideLoading: () => void;
@@ -33,11 +32,12 @@ export default function FileIngestion({
   showToast,
   setPortfolioData,
 }: FileIngestionProps) {
-  const [files, setFiles] = useState<FileInfo[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [cloudAIEnabled, setCloudAIEnabled] = useState(false);
   const [localAIEnabled, setLocalAIEnabled] = useState(false);
   const dropZoneRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Check if AI options are configured
   useEffect(() => {
@@ -75,45 +75,42 @@ export default function FileIngestion({
     setIsDragging(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files);
-    addFiles(droppedFiles.map((f) => f.path));
+    addFiles(droppedFiles);
   };
 
-  const handleAddFiles = async () => {
-    try {
-      const selected = await open({
-        multiple: true,
-        filters: [
-          {
-            name: 'Documents',
-            extensions: ['pdf', 'docx', 'md', 'xlsx', 'pptx'],
-          },
-        ],
-      });
+  const handleAddFiles = () => {
+    fileInputRef.current?.click();
+  };
 
-      if (selected) {
-        const paths = Array.isArray(selected) ? selected : [selected];
-        addFiles(paths);
-      }
-    } catch (error) {
-      showToast('Error selecting files', 'error');
-      console.error('Error selecting files:', error);
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (selectedFiles && selectedFiles.length > 0) {
+      addFiles(Array.from(selectedFiles));
     }
   };
 
-  const addFiles = (filePaths: string[]) => {
-    const newFiles: FileInfo[] = filePaths.map((path) => ({
-      name: path.split('/').pop() || path,
-      path,
-      status: 'pending',
-    }));
+  const addFiles = (newFiles: File[]) => {
+    // Validate file types
+    const validExtensions = ['pdf', 'docx', 'md', 'xlsx', 'pptx'];
+    const validFiles = newFiles.filter((file) => {
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      return extension && validExtensions.includes(extension);
+    });
 
-    setFiles((prev) => [...prev, ...newFiles]);
-    onFilesIngested([...ingestedFiles, ...filePaths]);
+    if (validFiles.length < newFiles.length) {
+      showToast(
+        'Some files were skipped (only PDF, DOCX, MD, XLSX, PPTX allowed)',
+        'warning'
+      );
+    }
+
+    setFiles((prev) => [...prev, ...validFiles]);
+    onFilesIngested([...ingestedFiles, ...validFiles]);
   };
 
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
-    onFilesIngested(files.filter((_, i) => i !== index).map((f) => f.path));
+    onFilesIngested(files.filter((_, i) => i !== index));
   };
 
   const handleProcessDocuments = async () => {
@@ -126,7 +123,7 @@ export default function FileIngestion({
       showLoading('Processing documents...');
 
       // Ingest files
-      await ingestFiles(files.map((f) => f.path));
+      await ingestFiles(files);
 
       if (selectedTier === 'manual') {
         // For manual mode, just get the text for reference
@@ -189,6 +186,14 @@ export default function FileIngestion({
             <p className="mt-4 text-lg text-gray-600">
               Drag and drop files here or...
             </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept=".pdf,.docx,.md,.xlsx,.pptx"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
             <button onClick={handleAddFiles} className="btn-primary mt-4">
               Add Files
             </button>
