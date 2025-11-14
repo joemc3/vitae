@@ -13,6 +13,18 @@ A desktop application for generating professional portfolio websites from user d
 - **🔒 Secure API key storage**: OS-native credential managers (Keychain, Credential Manager, Secret Service)
 - **⚡ Static website generation**: Fast, SEO-friendly, deployable anywhere
 
+## 📊 Code Statistics
+
+- **Total Source Files**: 99
+- **Languages**:
+  - **Rust**: 8 files, ~1,318 lines (backend processing)
+  - **TypeScript**: 55 files, ~4,853 lines (UI + generator)
+  - **JavaScript**: 6 files, ~149 lines
+  - **CSS**: ~266 lines (theme styling)
+  - **Documentation**: 12 Markdown files
+- **Total Lines of Code**: ~6,586
+- **Architecture**: Monorepo with 3 main components (Tauri backend, React UI, Next.js generator)
+
 ## 📋 Prerequisites
 
 ### Required Software

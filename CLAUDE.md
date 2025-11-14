@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a desktop application for generating professional portfolio websites from user documents (resumes, PDFs, etc.). Built with Tauri (Rust backend) + React (UI) + Next.js (website generation).
 
+## Code Statistics
+
+- **Total Source Files**: 99
+- **Languages**:
+  - **Rust**: 8 files, ~1,318 lines
+  - **TypeScript**: 55 files, ~4,853 lines
+  - **JavaScript**: 6 files, ~149 lines
+  - **CSS**: ~266 lines
+  - **Documentation**: 12 Markdown files
+- **Total Lines of Code**: ~6,586
+
 ## Documentation
 
 Detailed specifications are located in `project_standards/`:
