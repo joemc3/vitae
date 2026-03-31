@@ -1,10 +1,11 @@
+import uuid
 from datetime import datetime
 
 from pydantic import BaseModel
 
 
 class DocumentResponse(BaseModel):
-    id: str
+    id: uuid.UUID
     filename: str
     content_type: str
     file_size: int
