@@ -25,15 +25,14 @@ def get_redis_settings() -> RedisSettings:
 
 async def startup(ctx):
     engine = create_async_engine(settings.database_url)
+    ctx["engine"] = engine
     ctx["session_factory"] = async_sessionmaker(engine, expire_on_commit=False)
     logger.info("Worker started")
 
 
 async def shutdown(ctx):
-    if "session_factory" in ctx:
-        engine = ctx["session_factory"].kw.get("bind")
-        if engine:
-            await engine.dispose()
+    if "engine" in ctx:
+        await ctx["engine"].dispose()
     logger.info("Worker shut down")
 
 

@@ -1,5 +1,5 @@
 import uuid
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from fastapi import UploadFile
 from sqlalchemy import select
@@ -48,7 +48,7 @@ async def upload_document(
     document = Document(
         id=doc_id,
         user_id=uuid.UUID(user_id),
-        filename=file.filename or "untitled",
+        filename=PurePosixPath(file.filename or "untitled").name or "untitled",
         content_type=content_type,
         file_path=relative_path,
         file_size=len(content),

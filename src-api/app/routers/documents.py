@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,6 +25,16 @@ async def upload_documents(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
+    # Validate all files before processing any
+    from app.services.document_parser import ALLOWED_CONTENT_TYPES, resolve_content_type
+    for file in files:
+        content_type = resolve_content_type(file.filename or "", file.content_type or "")
+        if content_type not in ALLOWED_CONTENT_TYPES:
+            raise HTTPException(
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail=f"Unsupported file type: {file.content_type} ({file.filename})",
+            )
+
     results = []
     for file in files:
         try:
@@ -57,11 +69,11 @@ async def list_all_documents(
 
 @router.get("/{doc_id}", response_model=DocumentResponse)
 async def get_single_document(
-    doc_id: str,
+    doc_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    document = await get_document(db, current_user["id"], doc_id)
+    document = await get_document(db, current_user["id"], str(doc_id))
     if document is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
     return document
@@ -69,11 +81,11 @@ async def get_single_document(
 
 @router.delete("/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_single_document(
-    doc_id: str,
+    doc_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
-    deleted = await delete_document(db, current_user["id"], doc_id)
+    deleted = await delete_document(db, current_user["id"], str(doc_id))
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
     return None
