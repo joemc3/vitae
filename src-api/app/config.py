@@ -20,6 +20,19 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "info"
 
+    # Encryption
+    secret_key: str = "change-me-in-production"
+
+    # Redis (ARQ job queue)
+    redis_url: str = "redis://redis:6379"
+
+    # File uploads
+    upload_dir: str = "uploads"
+    max_upload_size_mb: int = 10
+
+    # Ollama
+    ollama_url: str = "http://localhost:11434"
+
     model_config = {"env_prefix": "", "case_sensitive": False}
 
 

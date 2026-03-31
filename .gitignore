@@ -50,6 +50,9 @@ generated-sites/
 # Runtime user data
 user-data/
 
+# Uploaded documents (runtime data)
+uploads/
+
 # Superpowers brainstorm sessions
 .superpowers/
 
