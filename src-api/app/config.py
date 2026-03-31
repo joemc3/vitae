@@ -33,6 +33,11 @@ class Settings(BaseSettings):
     # Ollama
     ollama_url: str = "http://localhost:11434"
 
+    # Site generation
+    generation_dir: str = "/data/generation"
+    output_dir: str = "/data/output"
+    generator_script: str = "/app/generator/generate.js"
+
     model_config = {"env_prefix": "", "case_sensitive": False}
 
 
