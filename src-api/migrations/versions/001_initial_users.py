@@ -22,12 +22,14 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", UUID(as_uuid=True), primary_key=True, server_default=sa.text("uuid_generate_v4()")),
-        sa.Column("email", sa.String(255), nullable=False, unique=True, index=True),
+        sa.Column("email", sa.String(255), nullable=False, unique=True),
         sa.Column("password_hash", sa.String(255), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
+    op.create_index("ix_users_email", "users", ["email"])
 
 
 def downgrade() -> None:
+    op.drop_index("ix_users_email", table_name="users")
     op.drop_table("users")
