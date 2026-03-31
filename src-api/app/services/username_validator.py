@@ -4,7 +4,7 @@ RESERVED_USERNAMES = frozenset({
     "admin", "api", "static", "health", "login", "register", "settings",
 })
 
-USERNAME_PATTERN = re.compile(r"^[a-z][a-z0-9]+(?:-[a-z0-9]+)*$")
+USERNAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
 
 
 def validate_username(username: str) -> str | None:
