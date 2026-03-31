@@ -21,3 +21,11 @@ class UserResponse(BaseModel):
     email: str
 
     model_config = {"from_attributes": True}
+
+
+class UsernameRequest(BaseModel):
+    username: str
+
+
+class UsernameResponse(BaseModel):
+    username: str
