@@ -1,3 +1,5 @@
 from app.models.user import Base, User
+from app.models.document import Document
+from app.models.api_key import APIKey
 
-__all__ = ["Base", "User"]
+__all__ = ["Base", "User", "Document", "APIKey"]
