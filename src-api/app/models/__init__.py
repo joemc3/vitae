@@ -3,5 +3,6 @@ from app.models.document import Document
 from app.models.api_key import APIKey
 from app.models.profile import Profile
 from app.models.job_posting import JobPosting
+from app.models.site import Site
 
-__all__ = ["Base", "User", "Document", "APIKey", "Profile", "JobPosting"]
+__all__ = ["Base", "User", "Document", "APIKey", "Profile", "JobPosting", "Site"]
