@@ -8,7 +8,7 @@ from sqlalchemy import text
 
 from app.config import settings
 from app.database import async_session_factory
-from app.routers import auth
+from app.routers import auth, documents, settings as settings_router
 
 logger = logging.getLogger(__name__)
 
@@ -25,12 +25,29 @@ async def lifespan(app: FastAPI):
         logger.error(f"Migration failed: {result.stderr}")
     else:
         logger.info("Database migrations applied successfully")
+
+    # Create ARQ Redis pool
+    app.state.arq_pool = None
+    try:
+        from arq import create_pool
+
+        from app.worker import get_redis_settings
+
+        app.state.arq_pool = await create_pool(get_redis_settings())
+        logger.info("ARQ pool connected to Redis")
+    except Exception as e:
+        logger.warning(f"Redis not available — background jobs disabled: {e}")
+
     yield
+
+    # Cleanup
+    if app.state.arq_pool is not None:
+        await app.state.arq_pool.close()
 
 
 app = FastAPI(
     title="Professional Website Builder API",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -47,6 +64,8 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(documents.router)
+app.include_router(settings_router.router)
 
 
 @app.get("/health")
