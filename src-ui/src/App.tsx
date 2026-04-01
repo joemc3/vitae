@@ -1,233 +1,57 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-import './App.css';
-import FileIngestion from './components/FileIngestion';
-import Settings from './components/Settings';
-import MainEditor from './components/MainEditor';
-import ThemeSelection from './components/ThemeSelection';
-import GenerationSuccess from './components/GenerationSuccess';
-import Login from './components/Login';
-import Register from './components/Register';
-import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { PortfolioData, ProcessingTier } from './types/portfolio';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/auth-context';
+import { AppLayout } from '@/layouts/app-layout';
+import LoginPage from '@/pages/login';
+import RegisterPage from '@/pages/register';
+import DocumentsPage from '@/pages/documents';
+import ProfilePage from '@/pages/profile';
+import JobPostingsPage from '@/pages/job-postings';
+import JobPostingNewPage from '@/pages/job-posting-new';
+import JobPostingEditPage from '@/pages/job-posting-edit';
+import SitesPage from '@/pages/sites';
+import SettingsPage from '@/pages/settings';
 
-function AppContent() {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [showSettings, setShowSettings] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [toast, setToast] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'warning' | 'info';
-  } | null>(null);
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // Application state
-  const [selectedTier, setSelectedTier] = useState<ProcessingTier>('manual');
-  const [ingestedFiles, setIngestedFiles] = useState<File[]>([]);
-  const [downloadUrl, setDownloadUrl] = useState<string>('');
-  const [portfolioData, setPortfolioData] = useState<PortfolioData>({
-    profile: {
-      fullName: '',
-      title: '',
-      summary: '',
-    },
-    contact: {
-      email: '',
-      phone: '',
-      website: '',
-      socialLinks: [],
-    },
-    workExperience: [],
-    projects: [],
-    education: [],
-    skills: [],
-    theme: {
-      name: 'onyx',
-    },
-  });
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
-  // Auto-hide toast after 5 seconds
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => {
-        setToast(null);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-  const showToast = (
-    message: string,
-    type: 'success' | 'error' | 'warning' | 'info' = 'info'
-  ) => {
-    setToast({ message, type });
-  };
-
-  const showLoading = (message: string) => {
-    setLoadingMessage(message);
-    setLoading(true);
-  };
-
-  const hideLoading = () => {
-    setLoading(false);
-    setLoadingMessage('');
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      showToast('Error logging out', 'error');
-    }
-  };
-
-  return (
-    <div className="app-container">
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/app/*"
-          element={
-            <ProtectedRoute>
-              <div className="flex flex-col h-screen">
-                {/* Header */}
-                <header className="app-header">
-                  <h1 className="app-title">Professional Website Builder</h1>
-                  <div className="flex items-center gap-4">
-                    <button
-                      className="settings-icon"
-                      onClick={() => setShowSettings(true)}
-                      aria-label="Settings"
-                    >
-                      ⚙️
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="btn-secondary text-sm"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </header>
-
-                {/* Main Content */}
-                <main className="app-content">
-                  <Routes>
-                    <Route
-                      path="/"
-                      element={
-                        <FileIngestion
-                          selectedTier={selectedTier}
-                          onTierChange={setSelectedTier}
-                          ingestedFiles={ingestedFiles}
-                          onFilesIngested={setIngestedFiles}
-                          onNext={() => navigate('/app/editor')}
-                          showLoading={showLoading}
-                          hideLoading={hideLoading}
-                          showToast={showToast}
-                          portfolioData={portfolioData}
-                          setPortfolioData={setPortfolioData}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/editor"
-                      element={
-                        <MainEditor
-                          portfolioData={portfolioData}
-                          onUpdate={setPortfolioData}
-                          onNext={() => navigate('/app/themes')}
-                          onBack={() => navigate('/app')}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/themes"
-                      element={
-                        <ThemeSelection
-                          portfolioData={portfolioData}
-                          onThemeSelect={(themeName) =>
-                            setPortfolioData({
-                              ...portfolioData,
-                              theme: { name: themeName },
-                            })
-                          }
-                          onGenerate={(url) => {
-                            setDownloadUrl(url);
-                            navigate('/app/success');
-                          }}
-                          onBack={() => navigate('/app/editor')}
-                          showLoading={showLoading}
-                          hideLoading={hideLoading}
-                          showToast={showToast}
-                        />
-                      }
-                    />
-                    <Route
-                      path="/success"
-                      element={
-                        <GenerationSuccess
-                          onBackToEditor={() => navigate('/app/editor')}
-                          showToast={showToast}
-                          downloadUrl={downloadUrl}
-                        />
-                      }
-                    />
-                  </Routes>
-                </main>
-
-                {/* Settings Modal */}
-                {showSettings && (
-                  <Settings
-                    onClose={() => setShowSettings(false)}
-                    showToast={showToast}
-                  />
-                )}
-
-                {/* Loading Overlay */}
-                {loading && (
-                  <div className="loading-overlay">
-                    <div className="loading-content">
-                      <div className="spinner"></div>
-                      <p className="text-gray-700 font-medium">
-                        {loadingMessage}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Toast Notification */}
-                {toast && (
-                  <div className={`toast ${toast.type}`}>
-                    <p>{toast.message}</p>
-                  </div>
-                )}
-              </div>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Default Redirect */}
-        <Route path="/" element={<Navigate to="/app" replace />} />
-        <Route path="*" element={<Navigate to="/app" replace />} />
-      </Routes>
-    </div>
-  );
+  return <>{children}</>;
 }
 
-function App() {
+export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/app"
+        element={
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="documents" replace />} />
+        <Route path="documents" element={<DocumentsPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="job-postings" element={<JobPostingsPage />} />
+        <Route path="job-postings/new" element={<JobPostingNewPage />} />
+        <Route path="job-postings/:id" element={<JobPostingEditPage />} />
+        <Route path="sites" element={<SitesPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/app" replace />} />
+    </Routes>
   );
 }
-
-export default App;
