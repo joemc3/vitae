@@ -74,7 +74,7 @@ Public Sites (Nginx)  ←── serves ────┘
 - **Package management**: `uv` with committed `uv.lock`
 - **Auth**: JWT (`python-jose`) + bcrypt
 - **Database**: PostgreSQL 16 with `asyncpg`
-- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS
+- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui (Radix) + TanStack Query
 - **Generator**: Next.js 14
 - **LLM Gateway**: LiteLLM (unified interface for Anthropic, OpenAI, Gemini, OpenRouter, Ollama)
 - **Containers**: Docker Compose with profiles (`dev`)
@@ -233,17 +233,22 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 ## Current Phase
 
-**Phase 3a (Sites & Generator Wiring) is complete.** Includes:
-- Username field on users for public URL namespace (`/{username}`, `/{username}/{slug}`)
-- Job posting ingestion: URL scraping, paste-and-parse (LLM), manual entry
-- Site generation pipeline: API → ARQ worker → Next.js subprocess → static HTML
-- Profile tailoring: LLM produces job-specific profile variants for targeted sites
-- Public Nginx service serving generated static sites
-- Stale detection for portfolio regeneration nudge
+**Phase 3b (Admin UI) is complete.** Full rebuild of the React admin app with shadcn/ui, TanStack Query, and persistent sidebar layout. Includes:
+- Login/register auth pages
+- Document upload with drag-and-drop, list, expand, delete
+- Profile view with inline editing and SSE-powered AI synthesis
+- Job posting management: tabbed create (URL scrape, text parse, manual), edit, list, delete
+- Site generation: portfolio and targeted, theme selection, async status polling, stale detection
+- Settings: username setup, per-provider API key management, model selection, connection testing
+- Dark mode with system-preference default and manual toggle
 
-**Phase 3b (Admin UI)** is next, followed by Phase 3c (Theme Design) and Phase 3d (Resume PDF Generation).
+**Previous phases:**
+- Phase 3a (Sites & Generator Wiring) — backend pipeline, job postings, site generation, public Nginx
+- Phase 2b (Profile & Settings) — profile synthesis, API key management, document parsing
 
-See `docs/superpowers/specs/2026-03-31-phase3a-sites-generator-wiring-design.md` for the full design.
+**Phase 3c (Theme Design)** is next, followed by Phase 3d (Resume PDF Generation).
+
+See `docs/superpowers/specs/2026-03-31-phase3b-admin-ui-design.md` for the full design.
 
 ## CRITICAL NOTES
 
