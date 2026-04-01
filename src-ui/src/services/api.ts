@@ -1,45 +1,50 @@
-/**
- * API client for web application
- * Replaces Tauri invoke calls with HTTP requests to backend API
- */
+import axios from 'axios';
+import type {
+  LoginRequest,
+  RegisterRequest,
+  TokenResponse,
+  UserResponse,
+  UsernameRequest,
+  UsernameResponse,
+  DocumentResponse,
+  ProfileResponse,
+  ProfileData,
+  SynthesizeRequest,
+  JobPostingCreate,
+  JobPostingUpdate,
+  JobPostingResponse,
+  JobPostingDraft,
+  ScrapeRequest,
+  ParseRequest,
+  PortfolioGenerateRequest,
+  TargetedGenerateRequest,
+  SiteResponse,
+  APIKeySaveRequest,
+  APIKeySaveResponse,
+  APIKeyStatusResponse,
+  ModelListResponse,
+  ModelSelectRequest,
+  TestConnectionRequest,
+  TestConnectionResponse,
+} from '@/types/api';
 
-import axios, { AxiosInstance, AxiosError } from 'axios';
-import { PortfolioData, ProcessingTier } from '../types/portfolio';
-
-// Get API URL from environment variables
-const API_BASE_URL =
-  (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL ||
-  'http://localhost:3001';
-
-// Create axios instance
-const apiClient: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true, // Enable cookies for session management
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '',
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor to add auth token
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-// Response interceptor for error handling
-apiClient.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
       localStorage.removeItem('authToken');
       window.location.href = '/login';
     }
@@ -47,379 +52,237 @@ apiClient.interceptors.response.use(
   }
 );
 
-// ============================================================================
-// Authentication API
-// ============================================================================
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
+// Auth
+export async function register(data: RegisterRequest): Promise<TokenResponse> {
+  const res = await api.post<TokenResponse>('/api/auth/register', data);
+  return res.data;
 }
 
-export interface LoginRequest {
-  email: string;
-  password: string;
+export async function login(data: LoginRequest): Promise<TokenResponse> {
+  const res = await api.post<TokenResponse>('/api/auth/login', data);
+  return res.data;
 }
 
-export interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-  };
-}
-
-/**
- * Register a new user
- */
-export async function register(
-  email: string,
-  password: string
-): Promise<AuthResponse> {
-  try {
-    const response = await apiClient.post<AuthResponse>('/api/auth/register', {
-      email,
-      password,
-    });
-    // Store token
-    localStorage.setItem('authToken', response.data.token);
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      `Registration failed: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
-}
-
-/**
- * Login user
- */
-export async function login(
-  email: string,
-  password: string
-): Promise<AuthResponse> {
-  try {
-    const response = await apiClient.post<AuthResponse>('/api/auth/login', {
-      email,
-      password,
-    });
-    // Store token
-    localStorage.setItem('authToken', response.data.token);
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      `Login failed: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
-}
-
-/**
- * Logout user
- */
 export async function logout(): Promise<void> {
-  try {
-    await apiClient.post('/api/auth/logout');
-  } finally {
-    // Always clear token, even if API call fails
-    localStorage.removeItem('authToken');
-  }
+  await api.post('/api/auth/logout');
 }
 
-/**
- * Get current user
- */
-export async function getCurrentUser(): Promise<{
-  id: string;
-  email: string;
-} | null> {
-  try {
-    const response = await apiClient.get('/api/auth/me');
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+export async function getMe(): Promise<UserResponse> {
+  const res = await api.get<UserResponse>('/api/auth/me');
+  return res.data;
 }
 
-// ============================================================================
-// File Ingestion API
-// ============================================================================
-
-/**
- * Ingest files - upload files to server
- */
-export async function ingestFiles(files: File[]): Promise<void> {
-  try {
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append('files', file);
-    });
-
-    await apiClient.post('/api/files/ingest', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  } catch (error) {
-    throw new Error(
-      `Failed to ingest files: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+export async function setUsername(data: UsernameRequest): Promise<UsernameResponse> {
+  const res = await api.put<UsernameResponse>('/api/auth/username', data);
+  return res.data;
 }
 
-/**
- * Get aggregated text from all ingested files
- */
-export async function getAggregatedText(): Promise<string> {
-  try {
-    const response = await apiClient.get<{ text: string }>(
-      '/api/files/aggregated-text'
-    );
-    return response.data.text;
-  } catch (error) {
-    throw new Error(
-      `Failed to get aggregated text: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+// Documents
+export async function getDocuments(statusFilter?: string): Promise<DocumentResponse[]> {
+  const params = statusFilter ? { status_filter: statusFilter } : {};
+  const res = await api.get<DocumentResponse[]>('/api/documents', { params });
+  return res.data;
 }
 
-// ============================================================================
-// AI Processing API
-// ============================================================================
-
-/**
- * Get JSON portfolio data from AI based on the selected tier
- */
-export async function getJsonFromAI(
-  tier: ProcessingTier,
-  aggregatedText?: string,
-  provider?: string
-): Promise<PortfolioData> {
-  try {
-    const response = await apiClient.post<PortfolioData>('/api/ai/process', {
-      tier,
-      aggregatedText,
-      provider,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      `Failed to get JSON from AI: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+export async function getDocument(id: string): Promise<DocumentResponse> {
+  const res = await api.get<DocumentResponse>(`/api/documents/${id}`);
+  return res.data;
 }
 
-// ============================================================================
-// Website Generation API
-// ============================================================================
+export async function uploadDocuments(files: File[]): Promise<DocumentResponse[]> {
+  const formData = new FormData();
+  files.forEach((file) => formData.append('files', file));
+  const res = await api.post<DocumentResponse[]>('/api/documents', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return res.data;
+}
 
-/**
- * Generate the website with the provided portfolio data and theme
- */
-export async function generateWebsite(
-  portfolioData: PortfolioData,
-  themeName: string
-): Promise<{ downloadUrl: string }> {
-  try {
-    const response = await apiClient.post<{ downloadUrl: string }>(
-      '/api/website/generate',
-      {
-        portfolioData,
-        theme: themeName,
+export async function deleteDocument(id: string): Promise<void> {
+  await api.delete(`/api/documents/${id}`);
+}
+
+// Profile
+export async function getProfile(): Promise<ProfileResponse> {
+  const res = await api.get<ProfileResponse>('/api/profile');
+  return res.data;
+}
+
+export async function replaceProfile(data: ProfileData): Promise<ProfileResponse> {
+  const res = await api.put<ProfileResponse>('/api/profile', data);
+  return res.data;
+}
+
+export async function patchProfile(data: Partial<ProfileData>): Promise<ProfileResponse> {
+  const res = await api.patch<ProfileResponse>('/api/profile', data);
+  return res.data;
+}
+
+export function synthesizeProfile(
+  data: SynthesizeRequest,
+  onEvent: (event: string, payload: Record<string, unknown>) => void,
+  onError: (error: string) => void
+): () => void {
+  const token = localStorage.getItem('authToken');
+  const baseUrl = import.meta.env.VITE_API_URL || '';
+  const url = `${baseUrl}/api/profile/synthesize`;
+
+  const controller = new AbortController();
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+    signal: controller.signal,
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const text = await response.text();
+        onError(text);
+        return;
       }
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      `Failed to generate website: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
-}
+      const reader = response.body?.getReader();
+      if (!reader) return;
 
-// ============================================================================
-// API Key Management API
-// ============================================================================
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-/**
- * Save an API key for a specific provider
- */
-export async function saveApiKey(
-  provider: string,
-  apiKey: string
-): Promise<void> {
-  try {
-    await apiClient.post('/api/settings/api-key', {
-      provider,
-      apiKey,
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        let currentEvent = '';
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            currentEvent = line.slice(7).trim();
+          } else if (line.startsWith('data: ') && currentEvent) {
+            try {
+              const payload = JSON.parse(line.slice(6));
+              onEvent(currentEvent, payload);
+            } catch {
+              // skip malformed data
+            }
+            currentEvent = '';
+          }
+        }
+      }
+    })
+    .catch((err) => {
+      if (err.name !== 'AbortError') {
+        onError(err.message);
+      }
     });
-  } catch (error) {
-    throw new Error(
-      `Failed to save API key: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+
+  return () => controller.abort();
 }
 
-/**
- * Get an API key for a specific provider
- */
-export async function getApiKey(provider: string): Promise<string | null> {
-  try {
-    const response = await apiClient.get<{ apiKey: string | null }>(
-      `/api/settings/api-key/${provider}`
-    );
-    return response.data.apiKey;
-  } catch (error) {
-    console.error(`Failed to get API key for ${provider}:`, error);
-    return null;
-  }
+// Job Postings
+export async function getJobPostings(): Promise<JobPostingResponse[]> {
+  const res = await api.get<JobPostingResponse[]>('/api/job-postings');
+  return res.data;
 }
 
-/**
- * Delete an API key for a specific provider
- */
+export async function getJobPosting(id: string): Promise<JobPostingResponse> {
+  const res = await api.get<JobPostingResponse>(`/api/job-postings/${id}`);
+  return res.data;
+}
+
+export async function createJobPosting(data: JobPostingCreate): Promise<JobPostingResponse> {
+  const res = await api.post<JobPostingResponse>('/api/job-postings', data);
+  return res.data;
+}
+
+export async function updateJobPosting(
+  id: string,
+  data: JobPostingUpdate
+): Promise<JobPostingResponse> {
+  const res = await api.put<JobPostingResponse>(`/api/job-postings/${id}`, data);
+  return res.data;
+}
+
+export async function deleteJobPosting(id: string): Promise<void> {
+  await api.delete(`/api/job-postings/${id}`);
+}
+
+export async function scrapeJobPosting(data: ScrapeRequest): Promise<JobPostingDraft> {
+  const res = await api.post<JobPostingDraft>('/api/job-postings/from-url', data);
+  return res.data;
+}
+
+export async function parseJobPosting(data: ParseRequest): Promise<JobPostingDraft> {
+  const res = await api.post<JobPostingDraft>('/api/job-postings/from-text', data);
+  return res.data;
+}
+
+// Sites
+export async function getSites(): Promise<SiteResponse[]> {
+  const res = await api.get<SiteResponse[]>('/api/sites');
+  return res.data;
+}
+
+export async function getSite(id: string): Promise<SiteResponse> {
+  const res = await api.get<SiteResponse>(`/api/sites/${id}`);
+  return res.data;
+}
+
+export async function generatePortfolio(
+  data: PortfolioGenerateRequest
+): Promise<SiteResponse> {
+  const res = await api.post<SiteResponse>('/api/sites/portfolio', data);
+  return res.data;
+}
+
+export async function generateTargeted(
+  data: TargetedGenerateRequest
+): Promise<SiteResponse> {
+  const res = await api.post<SiteResponse>('/api/sites/targeted', data);
+  return res.data;
+}
+
+export async function deleteSite(id: string): Promise<void> {
+  await api.delete(`/api/sites/${id}`);
+}
+
+// Settings
+export async function saveApiKey(data: APIKeySaveRequest): Promise<APIKeySaveResponse> {
+  const res = await api.post<APIKeySaveResponse>('/api/settings/api-keys', data);
+  return res.data;
+}
+
+export async function getApiKeyStatus(provider: string): Promise<APIKeyStatusResponse> {
+  const res = await api.get<APIKeyStatusResponse>(`/api/settings/api-keys/${provider}`);
+  return res.data;
+}
+
 export async function deleteApiKey(provider: string): Promise<void> {
-  try {
-    await apiClient.delete(`/api/settings/api-key/${provider}`);
-  } catch (error) {
-    throw new Error(
-      `Failed to delete API key: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+  await api.delete(`/api/settings/api-keys/${provider}`);
 }
 
-/**
- * Test the connection to an AI provider
- */
-export async function testApiConnection(
+export async function selectModel(
   provider: string,
-  apiKey?: string
-): Promise<boolean> {
-  try {
-    const response = await apiClient.post<{ success: boolean }>(
-      '/api/settings/test-connection',
-      {
-        provider,
-        apiKey,
-      }
-    );
-    return response.data.success;
-  } catch (error) {
-    console.error(`API connection test failed: ${error}`);
-    return false;
-  }
+  data: ModelSelectRequest
+): Promise<void> {
+  await api.put(`/api/settings/api-keys/${provider}/model`, data);
 }
 
-/**
- * Save the local AI endpoint URL
- */
-export async function saveLocalEndpoint(endpoint: string): Promise<void> {
-  try {
-    await apiClient.post('/api/settings/local-endpoint', {
-      endpoint,
-    });
-  } catch (error) {
-    throw new Error(
-      `Failed to save local endpoint: ${
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : 'Unknown error'
-      }`
-    );
-  }
+export async function getModels(provider: string): Promise<ModelListResponse> {
+  const res = await api.get<ModelListResponse>(`/api/settings/models/${provider}`);
+  return res.data;
 }
 
-/**
- * Get the local AI endpoint URL
- */
-export async function getLocalEndpoint(): Promise<string | null> {
-  try {
-    const response = await apiClient.get<{ endpoint: string | null }>(
-      '/api/settings/local-endpoint'
-    );
-    return response.data.endpoint;
-  } catch (error) {
-    console.error('Failed to get local endpoint:', error);
-    return null;
-  }
+export async function testConnection(
+  data: TestConnectionRequest
+): Promise<TestConnectionResponse> {
+  const res = await api.post<TestConnectionResponse>(
+    '/api/settings/test-connection',
+    data
+  );
+  return res.data;
 }
-
-// ============================================================================
-// Theme API
-// ============================================================================
-
-/**
- * Get the list of available themes
- */
-export async function getAvailableThemes(): Promise<
-  Array<{ name: string; displayName: string; thumbnailPath: string }>
-> {
-  try {
-    const response = await apiClient.get<
-      Array<{ name: string; displayName: string; thumbnailPath: string }>
-    >('/api/themes');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get available themes:', error);
-    // Return default themes if backend call fails
-    return [
-      {
-        name: 'onyx',
-        displayName: 'Onyx',
-        thumbnailPath: '/themes/onyx/thumbnail.png',
-      },
-      {
-        name: 'quartz',
-        displayName: 'Quartz',
-        thumbnailPath: '/themes/quartz/thumbnail.png',
-      },
-      {
-        name: 'serene',
-        displayName: 'Serene',
-        thumbnailPath: '/themes/serene/thumbnail.png',
-      },
-      {
-        name: 'jade',
-        displayName: 'Jade',
-        thumbnailPath: '/themes/jade/thumbnail.png',
-      },
-      {
-        name: 'coral',
-        displayName: 'Coral',
-        thumbnailPath: '/themes/coral/thumbnail.png',
-      },
-    ];
-  }
-}
-
-export default apiClient;
