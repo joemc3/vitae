@@ -23,45 +23,24 @@ try {
   process.exit(1);
 }
 
-const { site_id, type, theme, profile, output_dir, job_posting } = input;
+const { site_id, output_dir, portfolio_data } = input;
 
-console.log(`Generating ${type} site with theme "${theme}" for site ${site_id}`);
+console.log(`Generating ${portfolio_data.siteType} site with theme "${portfolio_data.theme.name}" for site ${site_id}`);
 console.log(`Output: ${output_dir}`);
 
-// Write profile data for Next.js to consume
+// Write portfolio data for Next.js to consume
 const dataDir = path.join(__dirname, '.data');
 fs.mkdirSync(dataDir, { recursive: true });
 fs.writeFileSync(
-  path.join(dataDir, 'profile.json'),
-  JSON.stringify(profile, null, 2)
-);
-
-if (job_posting) {
-  fs.writeFileSync(
-    path.join(dataDir, 'job-posting.json'),
-    JSON.stringify(job_posting, null, 2)
-  );
-}
-
-// Write build config
-fs.writeFileSync(
-  path.join(dataDir, 'build-config.json'),
-  JSON.stringify({ site_id, type, theme, output_dir }, null, 2)
+  path.join(dataDir, 'portfolio-data.json'),
+  JSON.stringify(portfolio_data, null, 2)
 );
 
 // Run Next.js static export
 try {
-  // Set environment variables for the build
-  const env = {
-    ...process.env,
-    NEXT_PUBLIC_THEME: theme,
-    NEXT_PUBLIC_SITE_TYPE: type,
-  };
-
   execSync('npx next build', {
     cwd: __dirname,
     stdio: 'inherit',
-    env,
   });
 
   // Copy the static output to the target directory

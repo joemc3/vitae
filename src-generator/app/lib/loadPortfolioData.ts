@@ -3,33 +3,23 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Load portfolio data from session.json file
- * Reads from environment variable SESSION_FILE or defaults to user-data/session.json
+ * Load portfolio data written by generate.js.
+ * Reads from .data/portfolio-data.json (written before next build).
  */
 export function loadPortfolioData(): PortfolioData {
-  // Get the session file path from environment variable or use default
-  const sessionFilePath =
-    process.env.SESSION_FILE ||
-    path.join(process.cwd(), '..', '..', 'user-data', 'session.json');
+  const dataPath = path.join(process.cwd(), '.data', 'portfolio-data.json');
 
   try {
-    // Read the file
-    const fileContents = fs.readFileSync(sessionFilePath, 'utf-8');
-
-    // Parse the JSON
-    const data = JSON.parse(fileContents) as PortfolioData;
-
-    return data;
+    const fileContents = fs.readFileSync(dataPath, 'utf-8');
+    return JSON.parse(fileContents) as PortfolioData;
   } catch (error) {
     console.error('Error loading portfolio data:', error);
-
-    // Return minimal default data if file doesn't exist or is invalid
     return getDefaultPortfolioData();
   }
 }
 
 /**
- * Returns default/sample portfolio data for development and testing
+ * Returns default/sample portfolio data for development and testing.
  */
 export function getDefaultPortfolioData(): PortfolioData {
   return {

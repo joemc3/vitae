@@ -5,6 +5,7 @@ import uuid
 from pathlib import Path
 
 from app.config import settings
+from app.services.profile_transform import transform_profile_for_generator
 
 
 def build_input_json(
@@ -15,17 +16,22 @@ def build_input_json(
     output_dir: str,
     job_posting: dict | None = None,
 ) -> dict:
-    """Build the input JSON for the Next.js generator."""
-    data = {
+    """Build the input JSON for the Next.js generator.
+
+    Transforms the DB profile data into the generator's PortfolioData
+    contract and wraps it with build metadata.
+    """
+    portfolio_data = transform_profile_for_generator(
+        profile_data=profile_data,
+        theme=theme,
+        site_type=site_type,
+        job_posting=job_posting,
+    )
+    return {
         "site_id": str(site_id),
-        "type": site_type,
-        "theme": theme,
-        "profile": profile_data,
         "output_dir": output_dir,
+        "portfolio_data": portfolio_data,
     }
-    if job_posting is not None:
-        data["job_posting"] = job_posting
-    return data
 
 
 async def run_generator(input_path: str) -> None:

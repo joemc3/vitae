@@ -10,6 +10,7 @@ class Basics(BaseModel):
     linkedin: str | None = None
     website: str | None = None
     summary: str | None = None
+    photo: str | None = None  # URL to uploaded photo
 
 
 class Skill(BaseModel):
