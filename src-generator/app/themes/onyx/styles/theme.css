@@ -1,0 +1,29 @@
+.onyx-theme {
+  --onyx-950: #0a0a0a;
+  --onyx-900: #121212;
+  --onyx-800: #1a1a1a;
+  --onyx-700: #2a2a2a;
+  --onyx-600: #3a3a3a;
+  --accent-blue: #7c8aff;
+  --accent-teal: #5eead4;
+}
+
+.onyx-theme .section-container {
+  @apply max-w-6xl mx-auto px-6 py-16 md:py-24;
+}
+
+.onyx-theme .section-title {
+  @apply text-3xl md:text-4xl font-heading font-bold mb-8 text-white;
+}
+
+.onyx-theme .card {
+  @apply bg-[var(--onyx-800)] rounded-lg p-6 border border-[var(--onyx-700)] hover:border-[var(--accent-blue)] transition-colors;
+}
+
+.onyx-theme .gradient-text {
+  @apply bg-gradient-to-r from-[var(--accent-blue)] to-[var(--accent-teal)] bg-clip-text text-transparent;
+}
+
+.onyx-theme .tech-tag {
+  @apply text-xs bg-[var(--onyx-700)] text-[var(--accent-teal)] px-3 py-1 rounded-full;
+}
