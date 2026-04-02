@@ -1,18 +1,23 @@
 import { loadPortfolioData } from './lib/loadPortfolioData';
-import OnyxTheme from './themes/onyx/page';
+import { jetbrainsMono, inter } from './themes/onyx/fonts';
+import OnyxPortfolio from './themes/onyx/portfolio';
+import OnyxTargeted from './themes/onyx/targeted';
 
 export default function Home() {
   const data = loadPortfolioData();
-
-  // Route to the appropriate theme based on data.theme.name
-  // Currently only Onyx is implemented
   const themeName = data.theme.name.toLowerCase();
+  const isTargeted = data.siteType === 'targeted';
+
+  // Font classes — each theme applies its own font variables
+  let fontClasses = '';
 
   switch (themeName) {
     case 'onyx':
-      return <OnyxTheme />;
     default:
-      // Default to Onyx theme if theme not found
-      return <OnyxTheme />;
+      fontClasses = `${jetbrainsMono.variable} ${inter.variable}`;
+      if (isTargeted) {
+        return <div className={fontClasses}><OnyxTargeted data={data} /></div>;
+      }
+      return <div className={fontClasses}><OnyxPortfolio data={data} /></div>;
   }
 }

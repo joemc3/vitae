@@ -4,6 +4,7 @@ node_modules/
 # Build output
 .next/
 out/
+*.tsbuildinfo
 
 # Runtime data written by generate.js (cleaned up after build, but gitignore as safety net)
 .data/
