@@ -46,8 +46,14 @@ export function getDefaultPortfolioData(): PortfolioData {
     projects: [],
     education: [],
     skills: [],
+    certifications: [],
+    publications: [],
+    awards: [],
+    volunteer: [],
+    languages: [],
     theme: {
       name: 'onyx',
     },
+    siteType: 'portfolio',
   };
 }
