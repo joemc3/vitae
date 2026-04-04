@@ -1,0 +1,20 @@
+.serene-theme {
+  --serene-bg: #fafbfc;
+  --serene-surface: #ffffff;
+  --serene-text: #2c3e50;
+  --serene-text-muted: #7f8c8d;
+  --serene-border: #ecf0f1;
+  --serene-accent: #95a5a6;
+}
+
+.serene-theme .section-container {
+  @apply max-w-3xl mx-auto px-6 py-16 md:py-20;
+}
+
+.serene-theme .section-title {
+  @apply text-2xl font-heading font-semibold mb-10 text-[var(--serene-text)] tracking-tight;
+}
+
+.serene-theme .divider {
+  @apply border-t border-[var(--serene-border)] my-0;
+}
