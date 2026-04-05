@@ -4,9 +4,10 @@ import { PhotoFrame } from '@/primitives';
 
 interface CoralHeroProps {
   profile: Profile;
+  hasResume?: boolean;
 }
 
-export function CoralHero({ profile }: CoralHeroProps) {
+export function CoralHero({ profile, hasResume }: CoralHeroProps) {
   return (
     <section id="about" className="min-h-[80vh] flex items-center bg-gradient-to-br from-[var(--coral-bg)] to-[var(--coral-surface)]">
       <div className="section-container w-full">
@@ -24,13 +25,22 @@ export function CoralHero({ profile }: CoralHeroProps) {
                 {profile.summary}
               </p>
             )}
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#contact"
                 className="inline-block bg-[var(--coral-primary)] text-white font-semibold px-8 py-3 rounded-full hover:bg-[var(--coral-primary-light)] transition-colors"
               >
                 Let&apos;s Connect
               </a>
+              {hasResume && (
+                <a
+                  href="resume.pdf"
+                  download
+                  className="inline-block border-2 border-[var(--coral-primary)] text-[var(--coral-primary)] font-semibold px-8 py-3 rounded-full hover:bg-[var(--coral-primary)] hover:text-white transition-colors"
+                >
+                  Download Resume
+                </a>
+              )}
             </div>
           </div>
           <div className="flex justify-center">

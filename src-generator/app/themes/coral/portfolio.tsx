@@ -12,7 +12,7 @@ interface CoralPortfolioProps {
 export default function CoralPortfolio({ data }: CoralPortfolioProps) {
   return (
     <div className="coral-theme min-h-screen bg-[var(--coral-bg)] text-[var(--coral-text)] font-body">
-      <CoralHero profile={data.profile} />
+      <CoralHero profile={data.profile} hasResume={data.hasResume} />
 
       <main>
         <Section id="projects" title="Projects" data={data.projects} className="bg-[var(--coral-bg)]" containerClassName="section-container" titleClassName="section-title">

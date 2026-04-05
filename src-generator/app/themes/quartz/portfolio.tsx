@@ -12,7 +12,7 @@ interface QuartzPortfolioProps {
 export default function QuartzPortfolio({ data }: QuartzPortfolioProps) {
   return (
     <div className="quartz-theme min-h-screen bg-[var(--quartz-bg)] text-[var(--quartz-text)] font-body">
-      <QuartzHeader profile={data.profile} />
+      <QuartzHeader profile={data.profile} hasResume={data.hasResume} />
 
       <main>
         <Section id="experience" title="Experience" data={data.workExperience} className="bg-[var(--quartz-bg)]" containerClassName="section-container" titleClassName="section-title">

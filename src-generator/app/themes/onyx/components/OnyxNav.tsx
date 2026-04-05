@@ -13,6 +13,7 @@ export function OnyxNav({ data }: OnyxNavProps) {
   if (data.workExperience.length > 0) links.push({ id: 'experience', label: 'Experience' });
   if (data.projects.length > 0) links.push({ id: 'projects', label: 'Projects' });
   if (data.education.length > 0) links.push({ id: 'education', label: 'Education' });
+  if (data.hasResume) links.push({ id: 'resume-download', label: 'Resume' });
   links.push({ id: 'contact', label: 'Contact' });
 
   return (
@@ -25,12 +26,22 @@ export function OnyxNav({ data }: OnyxNavProps) {
           <ul className="hidden md:flex space-x-8">
             {links.map((link) => (
               <li key={link.id}>
-                <a
-                  href={`#${link.id}`}
-                  className="text-gray-300 hover:text-[var(--accent-blue)] transition-colors"
-                >
-                  {link.label}
-                </a>
+                {link.id === 'resume-download' ? (
+                  <a
+                    href="resume.pdf"
+                    download
+                    className="text-gray-300 hover:text-[var(--accent-blue)] transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <a
+                    href={`#${link.id}`}
+                    className="text-gray-300 hover:text-[var(--accent-blue)] transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>

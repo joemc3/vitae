@@ -5,9 +5,10 @@ import { PhotoFrame } from '@/primitives';
 interface JadeHeaderProps {
   profile: Profile;
   subtitle?: string;
+  hasResume?: boolean;
 }
 
-export function JadeHeader({ profile, subtitle }: JadeHeaderProps) {
+export function JadeHeader({ profile, subtitle, hasResume }: JadeHeaderProps) {
   return (
     <header className="bg-[var(--jade-primary)] text-white">
       <div className="max-w-5xl mx-auto px-6 py-12">
@@ -33,6 +34,17 @@ export function JadeHeader({ profile, subtitle }: JadeHeaderProps) {
           <p className="text-white/90 mt-8 max-w-3xl leading-relaxed text-lg">
             {profile.summary}
           </p>
+        )}
+        {hasResume && (
+          <div className="mt-6">
+            <a
+              href="resume.pdf"
+              download
+              className="inline-block border border-[var(--jade-secondary)] text-[var(--jade-secondary)] font-semibold px-6 py-2 rounded hover:bg-[var(--jade-secondary)] hover:text-[var(--jade-primary)] transition-colors text-sm"
+            >
+              Download Resume
+            </a>
+          </div>
         )}
       </div>
     </header>

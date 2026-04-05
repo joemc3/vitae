@@ -12,7 +12,7 @@ interface JadePortfolioProps {
 export default function JadePortfolio({ data }: JadePortfolioProps) {
   return (
     <div className="jade-theme min-h-screen bg-[var(--jade-bg)] text-[var(--jade-text)] font-body">
-      <JadeHeader profile={data.profile} />
+      <JadeHeader profile={data.profile} hasResume={data.hasResume} />
 
       <main>
         <Section id="publications" title="Publications" data={data.publications} className="bg-[var(--jade-bg)]" containerClassName="section-container" titleClassName="section-title">

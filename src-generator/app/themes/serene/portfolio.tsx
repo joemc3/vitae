@@ -33,6 +33,17 @@ export default function SerenePortfolio({ data }: SerenePortfolioProps) {
               {data.profile.summary}
             </p>
           )}
+          {data.hasResume && (
+            <div className="mt-6">
+              <a
+                href="resume.pdf"
+                download
+                className="inline-block text-sm text-[var(--serene-text-muted)] hover:text-[var(--serene-text)] underline underline-offset-4 transition-colors"
+              >
+                Download Resume
+              </a>
+            </div>
+          )}
         </div>
       </header>
 

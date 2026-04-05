@@ -5,9 +5,10 @@ import { PhotoFrame } from '@/primitives';
 interface QuartzHeaderProps {
   profile: Profile;
   jobPosting?: JobPosting;
+  hasResume?: boolean;
 }
 
-export function QuartzHeader({ profile, jobPosting }: QuartzHeaderProps) {
+export function QuartzHeader({ profile, jobPosting, hasResume }: QuartzHeaderProps) {
   return (
     <header className="bg-[var(--quartz-navy)] text-white">
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -35,6 +36,17 @@ export function QuartzHeader({ profile, jobPosting }: QuartzHeaderProps) {
           <p className="text-white/80 mt-6 max-w-3xl leading-relaxed">
             {profile.summary}
           </p>
+        )}
+        {hasResume && (
+          <div className="mt-5">
+            <a
+              href="resume.pdf"
+              download
+              className="inline-block bg-[var(--quartz-primary)] text-white font-semibold px-6 py-2 rounded hover:bg-[var(--quartz-primary-light)] transition-colors text-sm"
+            >
+              Download Resume
+            </a>
+          </div>
         )}
       </div>
     </header>
