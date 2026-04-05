@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ProfileData } from '@/types/api';
 import * as api from '@/services/api';
+import { uploadPhoto, deletePhoto } from '@/services/api';
 
 export function useProfile() {
   return useQuery({
@@ -29,6 +30,26 @@ export function useReplaceProfile() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ProfileData) => api.replaceProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+}
+
+export function useUploadPhoto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => uploadPhoto(file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+}
+
+export function useDeletePhoto() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deletePhoto(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },

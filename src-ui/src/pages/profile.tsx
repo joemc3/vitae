@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useProfile, usePatchProfile } from '@/hooks/use-profile';
+import { PhotoUpload } from '@/components/PhotoUpload';
 import { useApiKeyStatuses } from '@/hooks/use-settings';
 import { synthesizeProfile } from '@/services/api';
 import { Button } from '@/components/ui/button';
@@ -239,6 +240,8 @@ export default function ProfilePage() {
           <AlertDescription>{synthError}</AlertDescription>
         </Alert>
       )}
+
+      <PhotoUpload photoPath={profile?.photo_path ?? null} />
 
       {/* Basics */}
       <Card>

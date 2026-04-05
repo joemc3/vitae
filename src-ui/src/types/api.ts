@@ -139,6 +139,7 @@ export interface ProfileResponse {
   generated_at: string | null;
   created_at: string;
   updated_at: string;
+  photo_path: string | null;
 }
 
 export interface SynthesizeRequest {

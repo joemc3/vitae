@@ -123,6 +123,20 @@ export async function patchProfile(data: Partial<ProfileData>): Promise<ProfileR
   return res.data;
 }
 
+export async function uploadPhoto(file: File): Promise<ProfileResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await api.post<ProfileResponse>('/api/profile/photo', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return res.data;
+}
+
+export async function deletePhoto(): Promise<ProfileResponse> {
+  const res = await api.delete<ProfileResponse>('/api/profile/photo');
+  return res.data;
+}
+
 export function synthesizeProfile(
   data: SynthesizeRequest,
   onEvent: (event: string, payload: Record<string, unknown>) => void,
