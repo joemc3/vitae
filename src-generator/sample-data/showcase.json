@@ -1,0 +1,256 @@
+{
+  "profile": {
+    "fullName": "Alexandra Chen",
+    "title": "Senior Software Engineer & Technical Lead",
+    "summary": "Senior software engineer with 12 years of experience designing and scaling distributed systems across fintech, cloud infrastructure, and developer tooling. I've led cross-functional teams of 8–15 engineers, driven platform migrations that reduced infrastructure costs by 40%, and shipped products used by millions. I care deeply about engineering culture, mentorship, and building systems that are reliable by design rather than by accident.",
+    "location": "San Francisco, CA"
+  },
+  "contact": {
+    "email": "alex.chen@example.com",
+    "phone": "+1 (415) 555-0192",
+    "website": "https://alexchen.dev",
+    "socialLinks": [
+      {
+        "platform": "LinkedIn",
+        "url": "https://linkedin.com/in/alexandrachen"
+      },
+      {
+        "platform": "GitHub",
+        "url": "https://github.com/alexchen-dev"
+      }
+    ]
+  },
+  "workExperience": [
+    {
+      "company": "Meridian Financial Technologies",
+      "location": "San Francisco, CA",
+      "title": "Staff Software Engineer / Technical Lead",
+      "startDate": "2021-03",
+      "endDate": "Present",
+      "responsibilities": [
+        "Lead a team of 10 engineers building Meridian's real-time payment processing platform, handling $4.2B in daily transaction volume with 99.997% uptime.",
+        "Redesigned the fraud detection pipeline using Apache Flink and Kafka Streams, cutting fraud loss by 31% and reducing false positive rates from 2.1% to 0.4%.",
+        "Drove the platform migration from monolithic Rails to event-driven microservices in Go and Python, reducing P99 latency from 840ms to 120ms.",
+        "Established engineering-wide observability standards (OpenTelemetry, Grafana, Tempo) adopted by 6 other product teams.",
+        "Partnered with Product and Compliance to ship PCI DSS Level 1 certification on schedule, coordinating across 4 engineering squads."
+      ]
+    },
+    {
+      "company": "Cloudstone Infrastructure",
+      "location": "San Francisco, CA",
+      "title": "Senior Software Engineer",
+      "startDate": "2018-06",
+      "endDate": "2021-02",
+      "responsibilities": [
+        "Built and maintained the multi-tenant Kubernetes control plane serving 3,000+ enterprise clusters across AWS, GCP, and Azure.",
+        "Developed a cluster autoscaling system that reduced average cloud spend per tenant by 28% without impacting SLA commitments.",
+        "Implemented a configuration drift detection service in Rust that eliminated a class of production incidents affecting approximately 12 customers per quarter.",
+        "Mentored 4 junior engineers through bi-weekly 1:1s, design reviews, and structured onboarding programs; all four were promoted within 18 months."
+      ]
+    },
+    {
+      "company": "DataPilot (acquired by Tableau, 2018)",
+      "location": "Seattle, WA",
+      "title": "Software Engineer",
+      "startDate": "2016-01",
+      "endDate": "2018-05",
+      "responsibilities": [
+        "Designed and shipped DataPilot's real-time SQL query compiler targeting PostgreSQL, Redshift, and BigQuery, used by 400+ enterprise analytics teams.",
+        "Reduced query planning time by 60% through AST caching and query fingerprinting; became a key acquisition justification for Tableau.",
+        "Led the integration of DataPilot's connector SDK into Tableau's product after acquisition, coordinating across two engineering organizations.",
+        "Contributed a vectorized aggregation optimization to Apache Arrow (accepted upstream) that improved throughput by 2.4x on columnar datasets."
+      ]
+    },
+    {
+      "company": "Helix Systems",
+      "location": "Austin, TX",
+      "title": "Software Engineer",
+      "startDate": "2014-07",
+      "endDate": "2015-12",
+      "responsibilities": [
+        "Built REST and GraphQL APIs in Python (Django/DRF) serving a healthcare workflow automation platform used across 35 hospital networks.",
+        "Implemented HIPAA-compliant audit logging and data lineage tracking, passing external compliance audits with zero findings.",
+        "Developed an internal scheduling engine that reduced nurse overtime by an average of 6 hours per week per unit, validated via a 4-hospital pilot."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Fenrir — Open-Source Distributed Rate Limiter",
+      "description": "A production-grade, Redis-backed distributed rate limiter library for Go and Python, supporting sliding window, token bucket, and fixed window algorithms. Designed for multi-region deployments with configurable consistency tradeoffs.",
+      "role": "Creator & Maintainer",
+      "technologies": ["Go", "Python", "Redis", "Lua scripting", "GitHub Actions", "Docker"],
+      "outcomes": [
+        "3,200+ GitHub stars and 480+ forks within 18 months of release.",
+        "Adopted by 14 organizations including two Fortune 500 companies.",
+        "Featured in the CNCF newsletter and discussed in two conference talks."
+      ],
+      "url": "https://github.com/alexchen-dev/fenrir"
+    },
+    {
+      "name": "QuantumCache — Adaptive Caching Layer",
+      "description": "A self-tuning caching middleware for Python web applications that uses reinforcement learning to continuously optimize TTL and eviction policies based on observed access patterns and downstream latency signals.",
+      "role": "Lead Engineer",
+      "technologies": ["Python", "FastAPI", "Redis", "PostgreSQL", "scikit-learn", "Prometheus"],
+      "outcomes": [
+        "Reduced cache miss rates by 44% in A/B testing vs. static TTL configuration.",
+        "Deployed in production at Meridian, serving 800M+ cache operations per day.",
+        "Presented at PyCon 2024 to an audience of 350 engineers."
+      ],
+      "url": "https://github.com/alexchen-dev/quantumcache"
+    },
+    {
+      "name": "Ledger Reconciliation Engine",
+      "description": "An internal financial reconciliation system at Meridian that automatically detects and resolves discrepancies between internal ledgers and external payment network records (Visa, Mastercard, ACH) using deterministic matching and escalation workflows.",
+      "role": "Technical Lead",
+      "technologies": ["Go", "Apache Kafka", "PostgreSQL", "Temporal", "Kubernetes", "Grafana"],
+      "outcomes": [
+        "Reduced manual reconciliation effort from 40 engineer-hours per week to under 2 hours.",
+        "Caught $2.3M in incorrectly processed transactions in the first 6 months.",
+        "Reduced time-to-detect for settlement discrepancies from 24 hours to under 90 seconds."
+      ]
+    },
+    {
+      "name": "OpenTrace — Distributed Tracing SDK",
+      "description": "An OpenTelemetry-compatible tracing SDK for Python microservices with automatic context propagation, sampling, and integration with Datadog, Honeycomb, and Jaeger backends. Built to reduce instrumentation burden to near-zero.",
+      "role": "Creator",
+      "technologies": ["Python", "OpenTelemetry", "gRPC", "Protocol Buffers", "PyPI"],
+      "outcomes": [
+        "Downloaded 180,000+ times on PyPI.",
+        "Reduced instrumentation time per new service from ~2 days to under 30 minutes at Cloudstone.",
+        "Merged two PRs into the upstream OpenTelemetry Python SDK."
+      ],
+      "url": "https://github.com/alexchen-dev/opentrace"
+    }
+  ],
+  "education": [
+    {
+      "institution": "University of California, Berkeley",
+      "degree": "Master of Science",
+      "fieldOfStudy": "Computer Science",
+      "startDate": "2012-08",
+      "endDate": "2014-05",
+      "notes": "Thesis: Adaptive Load Balancing in Heterogeneous Distributed Systems. GPA: 3.91. Recipient of the EECS Graduate Excellence Fellowship."
+    },
+    {
+      "institution": "University of Michigan",
+      "degree": "Bachelor of Science",
+      "fieldOfStudy": "Computer Science",
+      "startDate": "2008-09",
+      "endDate": "2012-05",
+      "notes": "Minor in Mathematics. Dean's List (6 semesters). President, Women in Computing Society (2011–2012)."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Languages",
+      "items": ["Go", "Python", "TypeScript", "Rust", "Java", "SQL", "Bash"]
+    },
+    {
+      "category": "Frameworks & Libraries",
+      "items": ["FastAPI", "Django", "gRPC", "Apache Kafka", "Apache Flink", "Temporal", "React", "Next.js"]
+    },
+    {
+      "category": "Cloud & Infrastructure",
+      "items": ["AWS (EKS, RDS, Lambda, SQS, S3)", "GCP (GKE, BigQuery, Pub/Sub)", "Azure AKS", "Kubernetes", "Terraform", "Helm", "Pulumi"]
+    },
+    {
+      "category": "Databases",
+      "items": ["PostgreSQL", "Redis", "Apache Cassandra", "CockroachDB", "BigQuery", "Elasticsearch"]
+    },
+    {
+      "category": "Observability & Tooling",
+      "items": ["OpenTelemetry", "Grafana", "Prometheus", "Datadog", "Honeycomb", "Jaeger", "GitHub Actions", "ArgoCD"]
+    },
+    {
+      "category": "Engineering Practices",
+      "items": ["Distributed systems design", "Event-driven architecture", "TDD & property-based testing", "SRE & incident management", "Technical roadmapping", "Engineering mentorship"]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect — Professional",
+      "issuer": "Amazon Web Services",
+      "dateObtained": "2022-09",
+      "expiration": "2025-09",
+      "credentialId": "AWS-SAP-20220914-ACX"
+    },
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "Cloud Native Computing Foundation",
+      "dateObtained": "2020-04",
+      "expiration": "2026-04",
+      "credentialId": "CKA-2004-033821"
+    },
+    {
+      "name": "Google Professional Cloud Architect",
+      "issuer": "Google Cloud",
+      "dateObtained": "2023-01",
+      "expiration": "2025-01",
+      "credentialId": "GCP-PCA-230115"
+    }
+  ],
+  "publications": [
+    {
+      "title": "Adaptive Rate Limiting at Scale: Lessons from Four Years in Production",
+      "venue": "ACM SIGOPS Operating Systems Review",
+      "date": "2024-06",
+      "url": "https://dl.acm.org/doi/example/rate-limiting-scale"
+    },
+    {
+      "title": "Taming Payment Reconciliation: A Case Study in Event-Driven Financial Systems",
+      "venue": "Strange Loop Conference 2023",
+      "date": "2023-09",
+      "url": "https://thestrangeloop.com/2023/taming-payment-reconciliation.html"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Engineering Excellence Award",
+      "issuer": "Meridian Financial Technologies",
+      "date": "2023-12",
+      "description": "Awarded annually to one engineer company-wide for exceptional technical impact and cross-team leadership. Recognized for the fraud detection pipeline redesign and PCI DSS certification effort."
+    },
+    {
+      "title": "Best Paper — Systems Track",
+      "issuer": "USENIX OSDI 2022",
+      "date": "2022-07",
+      "description": "Recognized for the paper 'Consistency Without Coordination: Conflict-Free Rate State in Geo-Distributed Systems', co-authored with Cloudstone colleagues."
+    }
+  ],
+  "volunteer": [
+    {
+      "organization": "Code Nation",
+      "role": "Volunteer Instructor",
+      "startDate": "2019-09",
+      "endDate": "Present",
+      "description": "Teach weekly web development and computer science fundamentals to high school students in underserved San Francisco communities. Co-developed the intermediate Python curriculum used by 12 instructors across 6 schools."
+    },
+    {
+      "organization": "Write/Speak/Code",
+      "role": "Conference Mentor",
+      "startDate": "2021-01",
+      "endDate": "Present",
+      "description": "Mentor engineers from underrepresented groups preparing to give their first conference talks or write technical blog posts. Worked with 18 mentees since 2021."
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "proficiency": "Native"
+    },
+    {
+      "language": "Mandarin Chinese",
+      "proficiency": "Professional working proficiency"
+    },
+    {
+      "language": "French",
+      "proficiency": "Conversational"
+    }
+  ],
+  "theme": {
+    "name": "onyx"
+  },
+  "siteType": "portfolio",
+  "hasResume": true
+}
