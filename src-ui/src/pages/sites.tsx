@@ -47,7 +47,13 @@ import {
 import { Link } from 'react-router-dom';
 import type { SiteResponse } from '@/types/api';
 
-const THEMES = ['developer-dark', 'developer-light', 'minimal'];
+const THEMES = [
+  { value: 'onyx', label: 'Onyx' },
+  { value: 'coral', label: 'Coral' },
+  { value: 'serene', label: 'Serene' },
+  { value: 'jade', label: 'Jade' },
+  { value: 'quartz', label: 'Quartz' },
+];
 
 function statusBadge(status: string) {
   switch (status) {
@@ -87,7 +93,7 @@ export default function SitesPage() {
 
   const [showPortfolioDialog, setShowPortfolioDialog] = useState(false);
   const [showTargetedDialog, setShowTargetedDialog] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState(THEMES[0]);
+  const [selectedTheme, setSelectedTheme] = useState(THEMES[0].value);
   const [selectedJobId, setSelectedJobId] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<SiteResponse | null>(null);
   const [genError, setGenError] = useState('');
@@ -315,8 +321,8 @@ export default function SitesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {THEMES.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
+                    <SelectItem key={t.value} value={t.value}>
+                      {t.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -376,8 +382,8 @@ export default function SitesPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {THEMES.map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t}
+                      <SelectItem key={t.value} value={t.value}>
+                        {t.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
