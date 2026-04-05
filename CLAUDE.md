@@ -70,7 +70,7 @@ Public Sites (Nginx)  ←── serves ────┘
 
 ## Tech Stack
 
-- **API**: Python 3.12, FastAPI, Uvicorn, SQLAlchemy 2.0 (async), Alembic, Pydantic v2
+- **API**: Python 3.12, FastAPI, Uvicorn, SQLAlchemy 2.0 (async), Alembic, Pydantic v2, Pillow (image processing), httpx (async HTTP client)
 - **Package management**: `uv` with committed `uv.lock`
 - **Auth**: JWT (`python-jose`) + bcrypt
 - **Database**: PostgreSQL 16 with `asyncpg`
@@ -146,12 +146,18 @@ npm run lint                              # Lint
 - `GET /api/resumes/:id` — Get resume details (JWT required)
 - `GET /api/resumes/:id/download` — Download resume PDF (JWT required)
 - `DELETE /api/resumes/:id` — Delete resume and PDF file (JWT required)
+- `POST /api/profile/photo` — Upload profile photo (JWT required)
+- `DELETE /api/profile/photo` — Remove profile photo (JWT required)
+- `GET /api/profile/photo/file` — Get profile photo file (JWT required)
+- `POST /api/preview` — Start theme preview (JWT required)
+- `GET /api/preview/:id` — Get rendered preview (unguessable ID)
+- `DELETE /api/preview/:id` — Clean up preview data (JWT required)
 
 ## Database
 
 - Schema managed by Alembic migrations in `src-api/migrations/versions/`
 - Migrations run automatically on API startup (via `alembic upgrade head` in the lifespan hook)
-- **Current tables**: `users`, `documents`, `api_keys`, `profiles`, `job_postings`, `sites`, `resumes`
+- **Current tables**: `users`, `documents`, `api_keys`, `profiles` (includes `photo_path` for uploaded profile photo), `job_postings`, `sites`, `resumes`
 
 All tables use UUID primary keys and automatic timestamps.
 
@@ -230,15 +236,16 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 ## Current Phase
 
-**Phase 3d (Resume PDF Generation) is complete.** Resume PDF generation pipeline with LLM-powered content tailoring, WeasyPrint rendering, theme-matched templates (Onyx, Coral, Serene, Jade, Quartz, Plain), user-configurable page targets, and two-pass page fitting. Admin UI includes dedicated resume management page with generation dialogs, polling, download, and stale detection.
+**Phase 3e-A (Polish Features) is complete.** Live preview system with two-tier approach (static theme showcase + SSR with real data), profile photo upload with Pillow resize, and conditional resume download link on portfolio sites. Admin UI includes theme gallery with screenshots, preview modal with iframe, and drag-and-drop photo upload on the profile page.
 
 **Previous phases:**
+- Phase 3d (Resume PDF Generation) — LLM-tailored resumes with WeasyPrint, 6 theme templates, two-pass page fitting
 - Phase 3c (Theme Design) — 5 site themes with content primitives composition architecture
 - Phase 3b (Admin UI) — full React admin app rebuild with shadcn/ui
 - Phase 3a (Sites & Generator Wiring) — backend pipeline, job postings, site generation, public Nginx
 - Phase 2b (Profile & Settings) — profile synthesis, API key management, document parsing
 
-**Phase 3e (Polish & Deployment)** is next.
+**Phase 3e-B (Deployment)** is next.
 
 ## CRITICAL NOTES
 
