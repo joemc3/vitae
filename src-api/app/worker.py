@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import shutil
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -151,6 +152,14 @@ async def generate_site_job(ctx, site_id: str):
             )
             has_resume = result.scalar_one_or_none() is not None
 
+            # Set photo URL for generator (relative to site root)
+            if profile.photo_path:
+                src_photo = Path(settings.upload_dir) / profile.photo_path
+                if src_photo.exists():
+                    if "basics" not in profile_data:
+                        profile_data["basics"] = {}
+                    profile_data["basics"]["photo"] = f"profile-photo/{src_photo.name}"
+
             # Build and write input
             output_dir = str(Path(settings.output_dir) / site.output_path)
             input_data = build_input_json(
@@ -166,6 +175,14 @@ async def generate_site_job(ctx, site_id: str):
 
             # Run generator
             await run_generator(input_path)
+
+            # Copy profile photo to output if it exists
+            if profile.photo_path:
+                src_photo = Path(settings.upload_dir) / profile.photo_path
+                if src_photo.exists():
+                    dst_photo = Path(output_dir) / "profile-photo" / src_photo.name
+                    dst_photo.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(str(src_photo), str(dst_photo))
 
             # Success
             site.status = "ready"
