@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+    --font-body: 'Open Sans', sans-serif;
+    --font-heading: 'Merriweather', serif;
+    --heading-weight: 700;
+    --h1-size: 18pt;
+    --h2-size: 9pt;
+    --color-text: #2d3b2d;
+    --color-bg: #fafdf7;
+    --color-heading: #4a7c59;
+    --color-name: #2d3b2d;
+    --color-subtitle: #5f7a5f;
+    --color-contact: #7a947a;
+    --color-date: #7a947a;
+    --color-bullet: #4a7c59;
+    --section-border: 0.75pt solid #c2d4b7;
+}
+
+.header {
+    border-bottom: 1.5pt solid #4a7c59;
+    padding-bottom: 8pt;
+}
+
+.section-title {
+    color: #4a7c59;
+}

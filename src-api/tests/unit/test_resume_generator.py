@@ -117,7 +117,6 @@ class TestParseResumeContent:
 
 
 class TestRenderResumeHtml:
-    @pytest.mark.xfail(reason="templates not yet created")
     def test_renders_plain_theme(self):
         html = render_resume_html(
             resume_content=SAMPLE_RESUME_CONTENT,

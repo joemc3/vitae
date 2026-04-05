@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=DM+Sans:wght@400;500&display=swap');
+
+:root {
+    --font-body: 'DM Sans', sans-serif;
+    --font-heading: 'Poppins', sans-serif;
+    --heading-weight: 700;
+    --h1-size: 20pt;
+    --h2-size: 9pt;
+    --color-text: #2d2420;
+    --color-bg: #fffaf7;
+    --color-heading: #d4553a;
+    --color-name: #d4553a;
+    --color-subtitle: #8b7355;
+    --color-contact: #8b7355;
+    --color-date: #8b7355;
+    --color-bullet: #f4a261;
+    --section-border: 2pt solid #f4a261;
+}
+
+body {
+    border-left: 5pt solid #d4553a;
+    padding-left: 8pt;
+}
+
+.coral-header .name {
+    color: #d4553a;
+}
+
+.section-title {
+    color: #d4553a;
+    border-bottom-color: #f4a261;
+    border-bottom-width: 2pt;
+}
+
+.entry {
+    padding-left: 6pt;
+    border-left: 1.5pt solid #f4a261;
+}
+
+.skills-grid .skill-category {
+    background: #fff5f0;
+    padding: 2pt 6pt;
+    border-radius: 2pt;
+}

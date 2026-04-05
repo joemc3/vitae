@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap');
+
+:root {
+    --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+    --font-heading: 'Inter', 'Helvetica Neue', sans-serif;
+    --heading-weight: 600;
+    --h1-size: 20pt;
+    --h2-size: 8.5pt;
+    --color-text: #1a1a1a;
+    --color-bg: #fafafa;
+    --color-heading: #6b7280;
+    --color-name: #1a1a1a;
+    --color-subtitle: #6b7280;
+    --color-contact: #9ca3af;
+    --color-date: #9ca3af;
+    --color-bullet: #6b7280;
+    --section-border: none;
+}
+
+.header .name {
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.section-title {
+    letter-spacing: 2px;
+    font-weight: 600;
+    border-bottom: none;
+    background: linear-gradient(to right, #374151, transparent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    padding-bottom: 0;
+    margin-bottom: 6pt;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    height: 0.5pt;
+    background: linear-gradient(to right, #374151, transparent);
+    margin-top: 3pt;
+}

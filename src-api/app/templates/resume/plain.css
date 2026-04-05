@@ -1,0 +1,22 @@
+:root {
+    --font-body: Georgia, 'Times New Roman', serif;
+    --font-heading: Georgia, 'Times New Roman', serif;
+    --heading-weight: 700;
+    --h1-size: 18pt;
+    --h2-size: 9pt;
+    --color-text: #111111;
+    --color-bg: #ffffff;
+    --color-heading: #111111;
+    --color-name: #111111;
+    --color-subtitle: #444444;
+    --color-contact: #555555;
+    --color-date: #555555;
+    --color-bullet: #111111;
+    --section-border: 0.75pt solid #333333;
+}
+
+.header {
+    text-align: center;
+    border-bottom: 1pt solid #333;
+    padding-bottom: 8pt;
+}

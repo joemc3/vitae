@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+:root {
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-heading: 'Source Sans 3', sans-serif;
+    --heading-weight: 600;
+    --h1-size: 20pt;
+    --h2-size: 9pt;
+    --color-text: #2c3e50;
+    --color-bg: #ffffff;
+    --color-heading: #5a8f9e;
+    --color-name: #2c3e50;
+    --color-subtitle: #7f8c8d;
+    --color-contact: #95a5a6;
+    --color-date: #95a5a6;
+    --color-bullet: #5a8f9e;
+    --section-border: 0.5pt solid #d5e8ed;
+}
+
+.header {
+    text-align: center;
+    padding-bottom: 10pt;
+    margin-bottom: 6pt;
+}
+
+.header .name {
+    font-weight: 300;
+    letter-spacing: 3px;
+}
+
+.header .title {
+    font-weight: 300;
+    color: #5a8f9e;
+}
+
+.section {
+    margin-top: 12pt;
+}

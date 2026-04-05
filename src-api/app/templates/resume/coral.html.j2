@@ -1,0 +1,15 @@
+{% extends "base.html.j2" %}
+
+{% block header %}
+<div class="header coral-header">
+    <div class="name">{{ basics.name or "Name" }}</div>
+    {% if basics.title %}<div class="title">{{ basics.title }}</div>{% endif %}
+    <div class="contact">
+        {% if basics.email %}<span>{{ basics.email }}</span>{% endif %}
+        {% if basics.phone %}<span>{{ basics.phone }}</span>{% endif %}
+        {% if basics.location %}<span>{{ basics.location }}</span>{% endif %}
+        {% if basics.linkedin %}<span>{{ basics.linkedin }}</span>{% endif %}
+        {% if basics.website %}<span>{{ basics.website }}</span>{% endif %}
+    </div>
+</div>
+{% endblock %}

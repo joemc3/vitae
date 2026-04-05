@@ -1,0 +1,167 @@
+/* Base resume styles — shared across all themes */
+@page {
+    size: letter;
+    margin: 0.6in 0.7in;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10pt;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+body {
+    font-family: var(--font-body, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+    color: var(--color-text, #1a1a1a);
+    background: var(--color-bg, #ffffff);
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading, var(--font-body));
+    font-weight: var(--heading-weight, 700);
+}
+
+h1 {
+    font-size: var(--h1-size, 18pt);
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: var(--h2-size, 10pt);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 12pt;
+    margin-bottom: 4pt;
+    color: var(--color-heading, var(--color-text));
+}
+
+h3 {
+    font-size: var(--h3-size, 10pt);
+    font-weight: 600;
+}
+
+.header {
+    margin-bottom: 10pt;
+}
+
+.header .name {
+    font-size: var(--h1-size, 18pt);
+    font-weight: var(--heading-weight, 700);
+    color: var(--color-name, var(--color-text));
+}
+
+.header .title {
+    font-size: 11pt;
+    color: var(--color-subtitle, #555);
+    margin-top: 2pt;
+}
+
+.header .contact {
+    font-size: 8pt;
+    color: var(--color-contact, #666);
+    margin-top: 4pt;
+}
+
+.header .contact span + span::before {
+    content: " · ";
+}
+
+.section {
+    margin-top: 10pt;
+}
+
+.section-title {
+    font-size: var(--h2-size, 10pt);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--color-heading, var(--color-text));
+    margin-bottom: 4pt;
+    padding-bottom: 2pt;
+    border-bottom: var(--section-border, 0.5pt solid #ccc);
+}
+
+.entry {
+    margin-bottom: 6pt;
+    break-inside: avoid;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.entry-title {
+    font-weight: 600;
+    font-size: 10pt;
+}
+
+.entry-subtitle {
+    font-size: 9pt;
+    color: var(--color-subtitle, #555);
+}
+
+.entry-date {
+    font-size: 8.5pt;
+    color: var(--color-date, #888);
+    white-space: nowrap;
+}
+
+.entry-bullets {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 2pt;
+}
+
+.entry-bullets li {
+    font-size: 9pt;
+    padding-left: 10pt;
+    position: relative;
+    margin-bottom: 1pt;
+}
+
+.entry-bullets li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-bullet, var(--color-text));
+}
+
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2pt 16pt;
+    font-size: 9pt;
+}
+
+.skill-category {
+    margin-bottom: 2pt;
+}
+
+.skill-category .label {
+    font-weight: 600;
+    color: var(--color-heading, var(--color-text));
+}
+
+.compact-list {
+    font-size: 9pt;
+}
+
+.compact-list .item {
+    margin-bottom: 2pt;
+}
+
+.compact-list .item-title {
+    font-weight: 600;
+}
+
+.compact-list .item-detail {
+    color: var(--color-subtitle, #555);
+}

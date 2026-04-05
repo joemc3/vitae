@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>{{ base_css }}</style>
+    <style>{{ theme_css }}</style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% block header %}
+    <div class="header">
+        <div class="name">{{ basics.name or "Name" }}</div>
+        {% if basics.title %}<div class="title">{{ basics.title }}</div>{% endif %}
+        <div class="contact">
+            {% if basics.email %}<span>{{ basics.email }}</span>{% endif %}
+            {% if basics.phone %}<span>{{ basics.phone }}</span>{% endif %}
+            {% if basics.location %}<span>{{ basics.location }}</span>{% endif %}
+            {% if basics.linkedin %}<span>{{ basics.linkedin }}</span>{% endif %}
+            {% if basics.website %}<span>{{ basics.website }}</span>{% endif %}
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block divider %}{% endblock %}
+
+    {% if content.summary %}
+    {% block summary %}
+    <div class="section">
+        <div class="section-title">Summary</div>
+        <p style="font-size: 9pt;">{{ content.summary }}</p>
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.experience %}
+    {% block experience %}
+    <div class="section">
+        <div class="section-title">Experience</div>
+        {% for exp in content.experience %}
+        <div class="entry">
+            <div class="entry-header">
+                <div>
+                    <span class="entry-title">{{ exp.title }}</span>
+                    {% if exp.company %}<span class="entry-subtitle"> — {{ exp.company }}</span>{% endif %}
+                </div>
+                <span class="entry-date">{{ exp.start_date or "" }}{% if exp.start_date %} – {% endif %}{{ exp.end_date or "Present" }}</span>
+            </div>
+            {% if exp.bullets %}
+            <ul class="entry-bullets">
+                {% for bullet in exp.bullets %}
+                <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.skills %}
+    {% block skills %}
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills-grid">
+            {% for cat in content.skills %}
+            <div class="skill-category">
+                <span class="label">{{ cat.category }}:</span>
+                {{ cat['items'] | join(", ") }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.education %}
+    {% block education %}
+    <div class="section">
+        <div class="section-title">Education</div>
+        {% for edu in content.education %}
+        <div class="entry">
+            <div class="entry-header">
+                <div>
+                    <span class="entry-title">{{ edu.degree }}</span>
+                    {% if edu.institution %}<span class="entry-subtitle"> — {{ edu.institution }}</span>{% endif %}
+                </div>
+                {% if edu.end_date %}<span class="entry-date">{{ edu.end_date }}</span>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.certifications %}
+    {% block certifications %}
+    <div class="section">
+        <div class="section-title">Certifications</div>
+        <div class="compact-list">
+            {% for cert in content.certifications %}
+            <div class="item">
+                <span class="item-title">{{ cert.name }}</span>
+                {% if cert.issuer %}<span class="item-detail"> — {{ cert.issuer }}</span>{% endif %}
+                {% if cert.date %}<span class="entry-date"> ({{ cert.date }})</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.projects %}
+    {% block projects %}
+    <div class="section">
+        <div class="section-title">Projects</div>
+        {% for proj in content.projects %}
+        <div class="entry">
+            <span class="entry-title">{{ proj.name }}</span>
+            {% if proj.description %}<p style="font-size: 9pt; margin-top: 1pt;">{{ proj.description }}</p>{% endif %}
+            {% if proj.technologies %}<p style="font-size: 8pt; color: var(--color-subtitle, #555); margin-top: 1pt;">{{ proj.technologies | join(", ") }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.publications %}
+    {% block publications %}
+    <div class="section">
+        <div class="section-title">Publications</div>
+        <div class="compact-list">
+            {% for pub in content.publications %}
+            <div class="item">
+                <span class="item-title">{{ pub.title }}</span>
+                {% if pub.venue %}<span class="item-detail"> — {{ pub.venue }}</span>{% endif %}
+                {% if pub.date %}<span class="entry-date"> ({{ pub.date }})</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.awards %}
+    {% block awards %}
+    <div class="section">
+        <div class="section-title">Awards</div>
+        <div class="compact-list">
+            {% for award in content.awards %}
+            <div class="item">
+                <span class="item-title">{{ award.title }}</span>
+                {% if award.issuer %}<span class="item-detail"> — {{ award.issuer }}</span>{% endif %}
+                {% if award.date %}<span class="entry-date"> ({{ award.date }})</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% if content.languages %}
+    {% block languages %}
+    <div class="section">
+        <div class="section-title">Languages</div>
+        <div class="compact-list">
+            {% for lang in content.languages %}
+            <div class="item">
+                <span class="item-title">{{ lang.language }}</span>
+                {% if lang.proficiency %}<span class="item-detail"> — {{ lang.proficiency }}</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+    {% endif %}
+</body>
+</html>
