@@ -9,6 +9,7 @@ import JobPostingsPage from '@/pages/job-postings';
 import JobPostingNewPage from '@/pages/job-posting-new';
 import JobPostingEditPage from '@/pages/job-posting-edit';
 import SitesPage from '@/pages/sites';
+import ResumesPage from '@/pages/resumes';
 import SettingsPage from '@/pages/settings';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="job-postings/new" element={<JobPostingNewPage />} />
         <Route path="job-postings/:id" element={<JobPostingEditPage />} />
         <Route path="sites" element={<SitesPage />} />
+        <Route path="resumes" element={<ResumesPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/app" replace />} />

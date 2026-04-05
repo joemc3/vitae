@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/sheet';
 import {
   FileText,
+  FileDown,
   User,
   Briefcase,
   Globe,
@@ -25,6 +26,7 @@ const navItems = [
   { to: '/app/profile', label: 'Profile', icon: User },
   { to: '/app/job-postings', label: 'Job Postings', icon: Briefcase },
   { to: '/app/sites', label: 'Sites', icon: Globe },
+  { to: '/app/resumes', label: 'Resumes', icon: FileDown },
   { to: '/app/settings', label: 'Settings', icon: Settings },
 ];
 
