@@ -10,6 +10,7 @@ from app.middleware.auth import get_current_user
 from app.schemas.profile import ProfileData, ProfileResponse, SynthesizeRequest
 from app.services import profile_service
 from app.services.profile_synthesizer import synthesize_profile
+from app.services.resume_service import mark_resumes_stale
 
 router = APIRouter(prefix="/api/profile", tags=["profile"])
 
@@ -41,6 +42,7 @@ async def update_profile_endpoint(
 ):
     user_id = uuid.UUID(current_user["id"])
     profile = await profile_service.update_profile(db, user_id, data.model_dump(exclude_none=True))
+    await mark_resumes_stale(db, user_id)
     return ProfileResponse(
         id=str(profile.id),
         data=ProfileData(**profile.data),
@@ -62,6 +64,7 @@ async def patch_profile_endpoint(
         profile = await profile_service.patch_profile(db, user_id, data.model_dump(exclude_none=True))
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    await mark_resumes_stale(db, user_id)
     return ProfileResponse(
         id=str(profile.id),
         data=ProfileData(**profile.data),
@@ -106,6 +109,9 @@ async def synthesize_profile_endpoint(
 
             # Complete
             yield _sse_event("complete", {"profile_id": str(profile.id)})
+
+            # Mark resumes stale after re-synthesis
+            await mark_resumes_stale(db, user_id)
 
         except ValueError as e:
             yield _sse_event("error", {"message": str(e)})
