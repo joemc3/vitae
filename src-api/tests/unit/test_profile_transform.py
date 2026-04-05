@@ -192,3 +192,63 @@ class TestTransformProfile:
         assert result["awards"] == []
         assert result["volunteer"] == []
         assert result["languages"] == []
+
+
+SAMPLE_PROFILE = {
+    "basics": {"name": "Jane", "title": "Engineer", "email": "j@t.com"},
+    "skills": [],
+    "experience": [],
+}
+
+
+class TestTransformHasResume:
+    def test_includes_has_resume_true(self):
+        result = transform_profile_for_generator(
+            profile_data=SAMPLE_PROFILE,
+            theme="onyx",
+            site_type="portfolio",
+            job_posting=None,
+            has_resume=True,
+        )
+        assert result["hasResume"] is True
+
+    def test_includes_has_resume_false(self):
+        result = transform_profile_for_generator(
+            profile_data=SAMPLE_PROFILE,
+            theme="onyx",
+            site_type="portfolio",
+            job_posting=None,
+            has_resume=False,
+        )
+        assert result["hasResume"] is False
+
+    def test_defaults_has_resume_false(self):
+        result = transform_profile_for_generator(
+            profile_data=SAMPLE_PROFILE,
+            theme="onyx",
+            site_type="portfolio",
+        )
+        assert result["hasResume"] is False
+
+
+class TestTransformBasicFields:
+    def test_transforms_profile_correctly(self):
+        result = transform_profile_for_generator(
+            profile_data=SAMPLE_PROFILE,
+            theme="onyx",
+            site_type="portfolio",
+        )
+        assert result["profile"]["fullName"] == "Jane"
+        assert result["profile"]["title"] == "Engineer"
+        assert result["contact"]["email"] == "j@t.com"
+        assert result["theme"] == {"name": "onyx"}
+        assert result["siteType"] == "portfolio"
+
+    def test_includes_photo_from_basics(self):
+        profile = {**SAMPLE_PROFILE, "basics": {**SAMPLE_PROFILE["basics"], "photo": "/photos/123/profile.jpg"}}
+        result = transform_profile_for_generator(
+            profile_data=profile,
+            theme="onyx",
+            site_type="portfolio",
+        )
+        assert result["profile"]["photo"] == "/photos/123/profile.jpg"

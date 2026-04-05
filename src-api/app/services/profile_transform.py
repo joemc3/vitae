@@ -6,6 +6,7 @@ def transform_profile_for_generator(
     theme: str,
     site_type: str,
     job_posting: dict | None = None,
+    has_resume: bool = False,
 ) -> dict:
     """Convert the DB profile schema to the generator's PortfolioData shape."""
     basics = profile_data.get("basics") or {}
@@ -47,6 +48,7 @@ def transform_profile_for_generator(
         "theme": {"name": theme},
         "siteType": site_type,
         "jobPosting": job_posting,
+        "hasResume": has_resume,
     }
 
 

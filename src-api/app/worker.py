@@ -140,6 +140,17 @@ async def generate_site_job(ctx, site_id: str):
                         db=session,
                     )
 
+            # Check if user has a non-stale general resume
+            result = await session.execute(
+                select(Resume).where(
+                    Resume.user_id == site.user_id,
+                    Resume.job_posting_id.is_(None),
+                    Resume.status == "ready",
+                    Resume.stale == False,
+                )
+            )
+            has_resume = result.scalar_one_or_none() is not None
+
             # Build and write input
             output_dir = str(Path(settings.output_dir) / site.output_path)
             input_data = build_input_json(
@@ -149,6 +160,7 @@ async def generate_site_job(ctx, site_id: str):
                 profile_data=profile_data,
                 output_dir=output_dir,
                 job_posting=job_posting_dict,
+                has_resume=has_resume,
             )
             input_path = write_input_file(site.id, input_data)
 

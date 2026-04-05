@@ -117,4 +117,5 @@ export interface PortfolioData {
   theme: Theme;
   siteType: 'portfolio' | 'targeted';
   jobPosting?: JobPosting;
+  hasResume?: boolean;
 }

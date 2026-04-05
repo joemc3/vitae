@@ -15,6 +15,7 @@ def build_input_json(
     profile_data: dict,
     output_dir: str,
     job_posting: dict | None = None,
+    has_resume: bool = False,
 ) -> dict:
     """Build the input JSON for the Next.js generator.
 
@@ -26,6 +27,7 @@ def build_input_json(
         theme=theme,
         site_type=site_type,
         job_posting=job_posting,
+        has_resume=has_resume,
     )
     return {
         "site_id": str(site_id),
