@@ -25,6 +25,7 @@ dependencies = [
     "python-pptx>=1.0.0",
     "litellm>=1.60.0",
     "weasyprint>=62.0",
+    "pillow>=12.1.1",
 ]
 
 [dependency-groups]
@@ -38,3 +39,7 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
