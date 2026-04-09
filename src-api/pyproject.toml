@@ -1,7 +1,7 @@
 [project]
-name = "professional-website-builder-api"
+name = "vitae-api"
 version = "0.1.0"
-description = "REST API for Professional Website Builder"
+description = "REST API for Vitae"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",

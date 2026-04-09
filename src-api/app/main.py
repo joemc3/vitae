@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.2.0",
     lifespan=lifespan,
 )
