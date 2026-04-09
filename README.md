@@ -1,10 +1,10 @@
-# Professional Website Builder
+# Vitae
 
 Upload your professional documents, get a gorgeous portfolio website and targeted resumes.
 
 ## Concept
 
-Professional Website Builder uses a **document repository model**: you upload many documents over time — resumes, project write-ups, certifications, bios, anything — and AI synthesizes them into a unified professional profile. From that profile the app can generate:
+Vitae uses a **document repository model**: you upload many documents over time — resumes, project write-ups, certifications, bios, anything — and AI synthesizes them into a unified professional profile. From that profile the app can generate:
 
 - **Portfolio sites** — a long-lived personal site that serves as your permanent professional presence
 - **Targeted sites** — custom sites tuned for a specific job posting, shareable as a URL
