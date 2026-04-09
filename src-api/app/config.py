@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql+asyncpg://pwbuser:pwbpass@localhost:5432/professional_website_builder"
+    database_url: str = "postgresql+asyncpg://vitae:vitaepass@localhost:5432/vitae"
 
     # Auth
     jwt_secret: str = "change-me-in-production"
