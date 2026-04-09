@@ -11,7 +11,7 @@ def _derive_key() -> bytes:
     hkdf = HKDF(
         algorithm=SHA256(),
         length=32,
-        salt=b"pwb-static-salt",
+        salt=b"vitae-static-salt",
         info=b"api-key-encryption",
     )
     return hkdf.derive(settings.secret_key.encode("utf-8"))
