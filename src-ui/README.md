@@ -1,231 +1,113 @@
-# Vitae - Web UI
+# Vitae — Admin UI
 
-This is the React-based web application for Vitae. It has been converted from a Tauri desktop application to a standalone web application.
+React SPA for managing documents, editing the synthesized profile, and generating portfolio/targeted sites and resume PDFs. This is the **admin surface** of Vitae, served on its own subdomain (`app.*`) and separate from the public sites.
 
-## Architecture
+See the root [`CLAUDE.md`](../CLAUDE.md) for project-wide architecture. This README is scoped to `src-ui/`.
 
-The application is a React SPA (Single Page Application) that communicates with a backend API server via HTTP/REST.
+## Tech Stack
 
-### Key Technologies
+- **React 18** + **TypeScript** + **Vite 5**
+- **Tailwind CSS** with **shadcn/ui** components on **Radix UI** primitives
+- **TanStack Query** for server state (cache, invalidation, mutation)
+- **React Router 6** for routing
+- **Axios** for HTTP with JWT interceptor
+- **lucide-react** for icons
+- `class-variance-authority` + `clsx` + `tailwind-merge` for component variants
 
-- **React 18** - UI framework
-- **TypeScript** - Type-safe JavaScript
-- **React Router DOM** - Client-side routing
-- **Axios** - HTTP client for API calls
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Build tool and dev server
+## Running
 
-## Setup
-
-### Prerequisites
-
-- Node.js v20.x or higher
-- npm v10.x or higher
-
-### Installation
+The supported dev workflow is Docker Compose from the repo root:
 
 ```bash
-# Install dependencies
+docker compose --profile dev up --build -d
+```
+
+The admin app is then available on `http://localhost:5173` and the API on `http://localhost:8000`. See the root README / CLAUDE.md for the full stack.
+
+For a local-only frontend loop (API still required — run it separately), from `src-ui/`:
+
+```bash
 npm install
+npm run dev        # Vite dev server on :5173, proxies /api → :8000
+npm run build      # tsc + vite build → dist/
+npm run lint       # ESLint strict (0 warnings)
+npm run format     # Prettier
 ```
 
-### Environment Configuration
+The Vite dev server proxies `/api/*` to `http://localhost:8000` (see `vite.config.ts`). Override the API base URL at build time with `VITE_API_URL` if you need to hit a non-proxied backend.
 
-Create environment files for your deployment:
+## Routing
 
-1. For development, copy `.env.example` to `.env.development`:
-   ```bash
-   cp .env.example .env.development
-   ```
+All authenticated routes are nested under `/app` behind a `ProtectedRoute` guard that reads the JWT from the `AuthContext`.
 
-2. Update the API URL in `.env.development`:
-   ```
-   VITE_API_URL=http://localhost:3001
-   ```
+| Route | Page |
+|---|---|
+| `/login` | `pages/login.tsx` |
+| `/register` | `pages/register.tsx` |
+| `/app` | redirects → `/app/documents` |
+| `/app/documents` | Upload, list, delete documents |
+| `/app/profile` | Synthesized profile editor + photo upload |
+| `/app/job-postings` | List saved job postings |
+| `/app/job-postings/new` | Create via URL scrape, paste, or manual entry |
+| `/app/job-postings/:id` | Edit saved posting |
+| `/app/sites` | Portfolio + targeted site generation, previews, list |
+| `/app/resumes` | Generate and download general + targeted resume PDFs |
+| `/app/settings` | LLM provider keys, model selection, test connection |
 
-3. For production, create `.env.production`:
-   ```
-   VITE_API_URL=https://your-production-domain.com
-   ```
+Unmatched routes redirect to `/app`.
 
-## Development
-
-```bash
-# Run development server (with hot reload)
-npm run dev
-
-# The app will be available at http://localhost:5173
-```
-
-The dev server includes a proxy configuration that forwards `/api/*` requests to `http://localhost:3001` (configurable in `vite.config.ts`).
-
-## Building for Production
-
-```bash
-# Build the application
-npm run build
-
-# Preview production build locally
-npm run preview
-```
-
-The built files will be in the `dist/` directory, ready to be deployed to any static hosting service or served by your backend.
-
-## API Integration
-
-The application expects a backend API server running at the URL specified in the environment variables. The API should implement the following endpoints:
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/logout` - Logout user
-- `GET /api/auth/me` - Get current user
-
-### File Management
-- `POST /api/files/ingest` - Upload files (multipart/form-data)
-- `GET /api/files/aggregated-text` - Get extracted text from files
-
-### AI Processing
-- `POST /api/ai/process` - Process documents with AI
-
-### Website Generation
-- `POST /api/website/generate` - Generate website from portfolio data
-
-### Settings
-- `POST /api/settings/api-key` - Save API key
-- `GET /api/settings/api-key/:provider` - Get API key
-- `DELETE /api/settings/api-key/:provider` - Delete API key
-- `POST /api/settings/test-connection` - Test API connection
-- `POST /api/settings/local-endpoint` - Save local AI endpoint
-- `GET /api/settings/local-endpoint` - Get local AI endpoint
-
-### Themes
-- `GET /api/themes` - Get available themes
-
-## Authentication
-
-The application uses JWT-based authentication:
-
-- Tokens are stored in `localStorage` as `authToken`
-- All API requests include the token in the `Authorization` header
-- Protected routes redirect to `/login` if user is not authenticated
-- 401 responses automatically clear the token and redirect to login
-
-## Project Structure
+## Directory Layout
 
 ```
 src-ui/
 ├── src/
-│   ├── components/          # React components
-│   │   ├── Login.tsx        # Login page
-│   │   ├── Register.tsx     # Registration page
-│   │   ├── ProtectedRoute.tsx  # Auth guard
-│   │   ├── FileIngestion.tsx   # File upload
-│   │   ├── MainEditor.tsx      # Portfolio editor
-│   │   ├── ThemeSelection.tsx  # Theme picker
-│   │   ├── GenerationSuccess.tsx  # Success page
-│   │   └── Settings.tsx        # Settings modal
+│   ├── App.tsx                # Routes + ProtectedRoute
+│   ├── main.tsx               # Entry, providers, router
+│   ├── layouts/
+│   │   └── app-layout.tsx     # Shell for /app/* (sidebar, topbar, outlet)
+│   ├── pages/                 # One file per route above
+│   ├── components/
+│   │   ├── PhotoUpload.tsx    # Drag-and-drop profile photo
+│   │   ├── PreviewModal.tsx   # Theme preview iframe
+│   │   ├── ThemeGallery.tsx   # Theme picker with screenshots
+│   │   └── ui/                # shadcn/ui primitives
+│   ├── hooks/                 # One TanStack Query hook per API resource:
+│   │                          # use-documents, use-profile, use-job-postings,
+│   │                          # use-sites, use-resumes, use-settings,
+│   │                          # use-preview, use-theme
 │   ├── contexts/
-│   │   └── AuthContext.tsx  # Authentication context
+│   │   └── auth-context.tsx   # JWT state, login/logout/register
+│   ├── providers/
+│   │   └── theme-provider.tsx # Dark/light mode
 │   ├── services/
-│   │   └── api.ts           # API client and functions
-│   ├── utils/
-│   │   └── tauri.ts         # API wrappers (legacy naming)
-│   ├── types/
-│   │   └── portfolio.ts     # TypeScript types
-│   ├── App.tsx              # Main app component with routing
-│   └── main.tsx             # App entry point
-├── .env.development         # Development environment variables
-├── .env.production          # Production environment variables
-├── .env.example             # Example environment file
-├── vite.config.ts           # Vite configuration
-└── package.json             # Dependencies and scripts
+│   │   └── api.ts             # Axios client + typed endpoint wrappers
+│   ├── types/                 # Shared API/domain types
+│   └── lib/                   # cn(), small utilities
+├── vite.config.ts
+├── tailwind.config.js
+└── package.json
 ```
 
-## Application Flow
+## Data Layer
 
-1. **Login/Register** (`/login`, `/register`) - User authentication
-2. **File Ingestion** (`/app`) - Users upload documents and choose processing tier
-3. **Main Editor** (`/app/editor`) - Users review and edit portfolio content
-4. **Theme Selection** (`/app/themes`) - Users choose a visual theme with preview
-5. **Generation Success** (`/app/success`) - Users download or preview their website
+All server state lives in TanStack Query. Each API resource has one hook file in `src/hooks/` that exposes query + mutation hooks (e.g. `useDocuments`, `useUploadDocument`, `useDeleteDocument`). Pages consume hooks — never call `api.ts` directly.
 
-## Deployment
+`services/api.ts` is the single source of typed endpoint wrappers. It:
 
-### Static Hosting (Netlify, Vercel, etc.)
+1. Creates a shared `axios` instance at `VITE_API_URL || ''` (empty falls back to Vite's `/api` proxy).
+2. Attaches `Authorization: Bearer <token>` from `localStorage.authToken` on every request.
+3. On `401`, clears the token and redirects to `/login`.
 
-1. Build the application: `npm run build`
-2. Deploy the `dist/` directory
-3. Configure environment variables in your hosting platform
-4. Set up redirects for SPA routing (all routes → `/index.html`)
+## Authentication
 
-### Self-Hosted
+JWT-based. `AuthContext` (`contexts/auth-context.tsx`) holds the token + user and persists to `localStorage`. `ProtectedRoute` in `App.tsx` gates `/app/*`. Login and register pages call the auth endpoints through `api.ts`; everything else flows through TanStack Query hooks.
 
-1. Build the application: `npm run build`
-2. Serve the `dist/` directory with any web server (nginx, Apache, etc.)
-3. Configure the web server to handle SPA routing
-4. Set the `VITE_API_URL` environment variable before building
+## Styling
 
-Example nginx configuration:
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /path/to/dist;
-    index index.html;
+- Tailwind with shadcn/ui conventions (CSS variables for theme tokens, `cn()` helper in `lib/utils.ts`).
+- `components/ui/` contains the generated shadcn primitives. Treat them as owned code — edit in place rather than re-running a generator.
+- Dark/light mode is driven by `theme-provider.tsx` using a `class` strategy on `<html>`.
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+## Linting
 
-    location /api {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
-## Migration from Tauri Desktop App
-
-This web application was converted from a Tauri desktop application. Key changes:
-
-1. **Removed Dependencies**:
-   - `@tauri-apps/api` - Replaced with HTTP API calls via axios
-
-2. **Added Dependencies**:
-   - `axios` - HTTP client for API communication
-
-3. **Architecture Changes**:
-   - File selection: Tauri dialog → HTML file input
-   - File upload: Local paths → FormData multipart upload
-   - API calls: Tauri invoke → HTTP REST API
-   - Authentication: OS-level → JWT with server session
-   - Storage: OS keychain → Server-side encrypted storage
-   - Website download: File system → HTTP download URL
-
-4. **New Features**:
-   - User authentication (login/register)
-   - Multi-user support
-   - Cloud-based file storage
-   - Session management
-
-## Linting and Formatting
-
-```bash
-# Run ESLint
-npm run lint
-
-# Format code with Prettier
-npm run format
-```
-
-## Notes
-
-- API keys are stored on the server (encrypted) instead of OS keychain
-- Files are uploaded to the server instead of being accessed locally
-- Generated websites are downloaded as ZIP files instead of being written to local filesystem
-- Authentication is required to access the application
+`npm run lint` runs ESLint with `--max-warnings 0`. CI and local dev both fail on any warning — fix or explicitly disable with a justified inline comment.

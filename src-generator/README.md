@@ -1,187 +1,187 @@
-# Portfolio Website Generator
+# Vitae — Site Generator
 
-Next.js-based static site generator for creating professional portfolio websites.
+Next.js 14 static site generator for Vitae portfolio and targeted job-application sites. Invoked as a subprocess by the Python worker — not a long-running server.
 
-## Overview
+See the root [`CLAUDE.md`](../CLAUDE.md) for project-wide architecture. This README is scoped to `src-generator/`.
 
-This is a Next.js 14 application that generates static portfolio websites from JSON data. It uses the App Router, TypeScript, and Tailwind CSS to create responsive, production-ready portfolio sites.
-
-## Features
-
-- **Static Site Generation (SSG)**: Outputs static HTML/CSS/JS that can be hosted anywhere
-- **Theme System**: Supports multiple themes (currently includes "Onyx" theme)
-- **TypeScript**: Full type safety for portfolio data
-- **Tailwind CSS**: Utility-first styling with custom design tokens
-- **Responsive**: Mobile-first design that works on all devices
-
-## Directory Structure
+## Role in the Stack
 
 ```
-src-generator/
-├── app/
-│   ├── layout.tsx              # Root layout
-│   ├── page.tsx                # Main page (routes to theme)
-│   ├── globals.css             # Global styles and Tailwind directives
-│   ├── types/
-│   │   └── portfolio.ts        # TypeScript types for portfolio data
-│   ├── lib/
-│   │   └── loadPortfolioData.ts # Data loading utility
-│   └── themes/
-│       └── onyx/               # Onyx theme
-│           ├── theme.config.json
-│           ├── page.tsx        # Main theme template
-│           └── components/     # Theme components
-├── public/
-│   └── themes/
-│       └── onyx/
-│           └── thumbnail.png   # Theme preview
-├── package.json
-├── next.config.js              # Next.js configuration
-├── tailwind.config.js          # Tailwind configuration
-└── tsconfig.json               # TypeScript configuration
+Admin UI  →  API / worker (Python)  →  node generate.js  →  Next.js static export  →  Nginx
 ```
 
-## Usage
+The worker (`src-api/app/services/site_generator.py`) spawns this generator as:
 
-### Install Dependencies
+```bash
+node /app/generator/generate.js --input <input.json>
+```
+
+`input.json` contains `{ site_id, output_dir, portfolio_data }`. The generator writes `portfolio_data` to `.data/portfolio-data.json`, runs `next build` (which exports to `out/`), then copies `out/` into `output_dir` for Nginx to serve.
+
+## Tech Stack
+
+- **Next.js 14** with App Router, `output: 'export'`, `trailingSlash: true`
+- **React 18**, **TypeScript**
+- **Tailwind CSS** (per-theme configs)
+- **Vitest** + **@testing-library/react** for unit tests
+
+## Running
+
+### As part of the stack
+
+The Python worker invokes the generator directly — there is no dev workflow to "run the generator". Start the full stack from the repo root:
+
+```bash
+docker compose --profile dev up --build -d
+```
+
+Then generate a site through the admin UI (`/app/sites`) or the `POST /api/sites/portfolio` / `POST /api/sites/targeted` endpoints.
+
+> **Note:** As of the Vitae rename, the worker container does not yet install Node or copy `src-generator/` into the image. Site generation currently requires running the worker on the host where this directory and Node are reachable. This is a known Phase 3e-B deployment task — see root `CLAUDE.md`.
+
+### Standalone (theme development)
+
+For iterating on a theme with live reload, run the Next.js dev server against sample data:
 
 ```bash
 cd src-generator
 npm install
+npm run dev        # Next.js on :3000, reads sample-data/showcase.json
 ```
 
-### Development Mode
+Use the sample data in `sample-data/showcase.json` as the fixture. The preview route (`app/preview/[id]/`) is what the admin UI's theme preview iframe hits in production.
+
+### Direct CLI invocation
 
 ```bash
-npm run dev
+node generate.js --input /path/to/input.json
 ```
 
-This starts a development server at http://localhost:3000
+`input.json` shape:
 
-### Build for Production
-
-```bash
-# Build with default data
-npm run build
-
-# Build with specific session file
-SESSION_FILE=/path/to/session.json npm run build
-```
-
-The build output will be generated in `../user-data/generated-site/`
-
-### Data Loading
-
-The generator reads portfolio data from a JSON file specified by the `SESSION_FILE` environment variable.
-
-- **Default path**: `../../user-data/session.json` (relative to src-generator)
-- **Override**: Set `SESSION_FILE` environment variable to a custom path
-
-If the file is not found, it falls back to default sample data.
-
-### Portfolio Data Format
-
-The JSON data must follow the schema defined in `app/types/portfolio.ts`:
-
-```typescript
+```jsonc
 {
-  "profile": {
-    "fullName": "Your Name",
-    "title": "Your Title",
-    "summary": "Your professional summary"
-  },
-  "contact": {
-    "email": "your@email.com",
-    "phone": "+1 234 567 8900",
-    "website": "https://yourwebsite.com",
-    "socialLinks": [
-      { "platform": "GitHub", "url": "https://github.com/yourusername" }
-    ]
-  },
-  "workExperience": [...],
-  "projects": [...],
-  "education": [...],
-  "skills": [...],
-  "theme": { "name": "onyx" }
+  "site_id": "abc123",
+  "output_dir": "/data/output/abc123",
+  "portfolio_data": {
+    "siteType": "portfolio" | "targeted",
+    "theme": { "name": "onyx" },
+    "profile": { ... },
+    // ...rest of the profile schema
+  }
 }
 ```
 
-See `/home/user/vitae/user-data/session.json` for a complete example.
+### Scripts
+
+```bash
+npm run dev        # Next.js dev server
+npm run build      # Static export → out/
+npm run lint       # next lint
+npm run format     # Prettier
+npm test           # Vitest run
+npm run test:watch # Vitest watch
+```
 
 ## Themes
 
-### Available Themes
+Five production themes ship today. Each theme must implement both a `portfolio.tsx` and a `targeted.tsx` entry so it can render either `siteType`, and declare its capabilities via `theme.config.ts`.
 
-#### Onyx (Dark Professional)
-- Dark theme with blue/teal accents
-- Perfect for developers and tech professionals
-- Clean, modern design
-- Sections: Hero, About, Work Experience, Projects, Education, Skills, Contact
+| Slug | Audience | Notes |
+|---|---|---|
+| `onyx` | Developers, engineers | Dark, technical, sharp edges |
+| `jade` | — | See `app/themes/jade/theme.config.ts` |
+| `coral` | — | See `app/themes/coral/theme.config.ts` |
+| `quartz` | — | See `app/themes/quartz/theme.config.ts` |
+| `serene` | — | See `app/themes/serene/theme.config.ts` |
 
-### Creating a New Theme
+### Theme structure
 
-1. Create a new directory in `app/themes/[theme-name]/`
-2. Add `theme.config.json`:
-   ```json
-   {
-     "name": "Theme Name",
-     "description": "Theme description",
-     "thumbnail": "/themes/[theme-name]/thumbnail.png"
-   }
-   ```
-3. Create `page.tsx` with your theme implementation
-4. Add components in `components/` directory
-5. Update `app/page.tsx` to include the new theme in the switch statement
-
-## Configuration
-
-### Output Directory
-
-The static site output directory is configured in `next.config.js`:
-
-```javascript
-distDir: '../user-data/generated-site'
+```
+app/themes/<slug>/
+├── theme.config.ts    # ThemeConfig export (slug, name, fonts, colors, supports)
+├── fonts.ts           # next/font declarations
+├── portfolio.tsx      # Portfolio site entry
+├── targeted.tsx       # Targeted site entry
+├── styles/            # Theme-specific CSS / Tailwind layers
+└── components/        # Theme-specific components (nav, hero, footer, etc.)
 ```
 
-### Tailwind Custom Colors
+`ThemeConfig` is defined in `app/types/theme-config.ts`:
 
-Custom color tokens are defined in `tailwind.config.js`:
+```ts
+interface ThemeConfig {
+  slug: string;
+  name: string;
+  description: string;
+  audience: string;
+  fonts: { heading: string; body: string };
+  colors: { primary: string; accent: string; background: string; surface: string; text: string };
+  supports: { portfolio: boolean; targeted: boolean };
+}
+```
 
-- `onyx-950` to `onyx-600`: Dark theme backgrounds
-- `accent-blue`: #60a5fa
-- `accent-teal`: #5eead4
+## Content Primitives
 
-## Integration with Tauri
+Themes compose shared primitives from `app/primitives/` rather than reimplementing common building blocks. This keeps theme code focused on layout and style, not data wrangling.
 
-The Tauri backend should:
+Current primitives (`app/primitives/index.ts`):
 
-1. Write approved portfolio JSON to `user-data/session.json`
-2. Set the `SESSION_FILE` environment variable to the absolute path
-3. Spawn the build process: `cd src-generator && npm run build`
-4. Wait for completion
-5. The static site will be available in `user-data/generated-site/`
+- **Structural**: `Section`, `SectionList`, `ConditionalRender`
+- **Hero / header**: `HeroBanner`, `ContactBar`, `PhotoFrame`
+- **Timeline / experience**: `TimelineEntry`, `DateRange`
+- **Work artifacts**: `ProjectCard`, `PublicationItem`, `AwardItem`, `CertificationItem`, `LanguageItem`
+- **Skills**: `SkillGroup`
+- **Utility**: `ExternalLink`
 
-## Development Notes
+Prefer adding to primitives over duplicating markup across themes. If a new theme needs a visual treatment no existing primitive supports, extend the primitive with options rather than forking it inside the theme directory.
 
-- **System Fonts**: Uses system font stack for optimal performance and compatibility
-- **Static Export**: All pages are pre-rendered at build time
-- **No External Fonts**: Avoids external font dependencies for offline builds
-- **Error Handling**: Gracefully handles missing or invalid JSON data
+## Directory Layout
 
-## Linting and Formatting
+```
+src-generator/
+├── app/
+│   ├── layout.tsx           # Root layout
+│   ├── page.tsx             # Dispatches to the active theme
+│   ├── globals.css          # Tailwind directives + shared resets
+│   ├── types/
+│   │   ├── portfolio.ts     # Profile/portfolio data shape
+│   │   └── theme-config.ts  # ThemeConfig interface
+│   ├── lib/                 # Data loading helpers
+│   ├── primitives/          # Shared cross-theme building blocks
+│   ├── themes/              # coral | jade | onyx | quartz | serene
+│   └── preview/[id]/        # Preview route hit by admin UI iframe
+├── sample-data/
+│   └── showcase.json        # Fixture for local dev
+├── __tests__/               # Vitest suites
+├── public/                  # Static assets (theme thumbnails, etc.)
+├── generate.js              # CLI entry: --input <path>
+├── Dockerfile
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
+
+## Preview System
+
+The admin UI's theme gallery renders live previews by POSTing to `/api/preview`, which writes rendered HTML that the generator's `app/preview/[id]/` route serves back via an unguessable ID. See `src-api/app/routers/preview.py` for the server side and `src-ui/src/components/PreviewModal.tsx` for the client.
+
+## Adding a Theme
+
+1. Create `app/themes/<slug>/` mirroring an existing theme's structure.
+2. Implement `theme.config.ts` with `supports.portfolio` and/or `supports.targeted` set.
+3. Implement `portfolio.tsx` and/or `targeted.tsx` composing primitives from `app/primitives/`.
+4. Add theme-specific components under `components/` and styles under `styles/`.
+5. Drop a thumbnail at `public/themes/<slug>/thumbnail.png` for the admin gallery.
+6. Register the theme in the dispatcher so `app/page.tsx` can route to it.
+7. Add a Vitest case under `__tests__/` that renders the theme against `sample-data/showcase.json`.
+
+## Testing
 
 ```bash
-# Run ESLint
-npm run lint
-
-# Format code with Prettier
-npm run format
+npm test             # one-shot
+npm run test:watch   # watch mode
 ```
 
-## Technologies
-
-- Next.js 14.2+
-- React 18.3+
-- TypeScript 5.4+
-- Tailwind CSS 3.4+
-- PostCSS with Autoprefixer
+Tests use Vitest with `jsdom` and `@testing-library/react`. Cover both `portfolio` and `targeted` renders per theme.

@@ -236,7 +236,7 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 ## Current Phase
 
-**Project renamed to Vitae** (2026-04-09). Cross-cutting rename from "Professional Website Builder" landed on `main` as a standalone mini-phase ahead of Phase 3e-B. Touched the Python API package, Node packages, Docker Compose, Postgres identity, HKDF encryption salt, admin UI branding, and all docs. The working directory on disk is still `professional-website-builder/` until the user renames it manually — see the post-rename checklist below.
+**Project renamed to Vitae** (2026-04-09). Cross-cutting rename from "Professional Website Builder" landed on `main` as a standalone mini-phase ahead of Phase 3e-B. Touched the Python API package, Node packages, Docker Compose, Postgres identity, HKDF encryption salt, admin UI branding, and all docs. Working directory, GitHub repo, and git remote are now all on `vitae`. `src-ui/README.md` and `src-generator/README.md` have been rewritten to match current reality as a follow-up.
 
 **Phase 3e-A (Polish Features) is complete.** Live preview system with two-tier approach (static theme showcase + SSR with real data), profile photo upload with Pillow resize, and conditional resume download link on portfolio sites. Admin UI includes theme gallery with screenshots, preview modal with iframe, and drag-and-drop photo upload on the profile page.
 
@@ -263,23 +263,6 @@ The rename was verified end-to-end in Docker: `/health` OK, all 8 tables in the 
 - Install Node in the Dockerfile and copy `src-generator` in during build, or
 - Build a separate generator image, or
 - Document that site generation requires running the worker on the host.
-
-### Post-rename manual steps
-
-1. **Rename the working directory on disk.** The Docker Compose project name is derived from the directory name, so renaming the directory also gives the stack a fresh set of volumes under the `vitae_*` prefix.
-   ```bash
-   docker compose --profile dev down -v    # if anything is running
-   cd ..
-   mv professional-website-builder vitae
-   cd vitae
-   docker compose --profile dev up --build -d
-   curl -sf http://localhost:8000/health   # expect {"status":"ok","database":"connected"}
-   ```
-2. **Optionally rename the GitHub repository and update the git remote URL:**
-   ```bash
-   git remote set-url origin <new-url>
-   ```
-3. **Follow-up rewrite:** `src-ui/README.md` and `src-generator/README.md` were only *surgically* renamed in the Vitae rename pass. Both are still severely out of date (Tauri references, wrong ports, wrong features) and should be rewritten as a follow-up task.
 
 ## CRITICAL NOTES
 
