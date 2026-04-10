@@ -19,7 +19,7 @@ from app.services.resume_service import mark_resumes_stale
 router = APIRouter(prefix="/api/profile", tags=["profile"])
 
 
-@router.get("/", response_model=ProfileResponse)
+@router.get("", response_model=ProfileResponse)
 async def get_profile(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),
@@ -39,7 +39,7 @@ async def get_profile(
     )
 
 
-@router.put("/", response_model=ProfileResponse)
+@router.put("", response_model=ProfileResponse)
 async def update_profile_endpoint(
     data: ProfileData,
     db: AsyncSession = Depends(get_db),
@@ -59,7 +59,7 @@ async def update_profile_endpoint(
     )
 
 
-@router.patch("/", response_model=ProfileResponse)
+@router.patch("", response_model=ProfileResponse)
 async def patch_profile_endpoint(
     data: ProfileData,
     db: AsyncSession = Depends(get_db),

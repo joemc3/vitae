@@ -18,7 +18,7 @@ from app.services.document_service import (
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
-@router.post("/", response_model=list[DocumentResponse], status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=list[DocumentResponse], status_code=status.HTTP_201_CREATED)
 async def upload_documents(
     request: Request,
     files: list[UploadFile],
@@ -58,7 +58,7 @@ async def upload_documents(
     return results
 
 
-@router.get("/", response_model=list[DocumentResponse])
+@router.get("", response_model=list[DocumentResponse])
 async def list_all_documents(
     status_filter: str | None = None,
     db: AsyncSession = Depends(get_db),

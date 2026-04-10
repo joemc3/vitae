@@ -273,7 +273,7 @@ export async function deleteSite(id: string): Promise<void> {
 
 // Preview
 export async function createPreview(data: PreviewRequest): Promise<PreviewResponse> {
-  const res = await api.post<PreviewResponse>('/api/preview/', data);
+  const res = await api.post<PreviewResponse>('/api/preview', data);
   return res.data;
 }
 

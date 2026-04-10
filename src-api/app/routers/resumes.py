@@ -113,7 +113,7 @@ async def generate_targeted(
     return _to_response(resume, job_posting_title=job_posting.title)
 
 
-@router.get("/", response_model=list[ResumeResponse])
+@router.get("", response_model=list[ResumeResponse])
 async def list_resumes(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),

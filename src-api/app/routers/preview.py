@@ -22,7 +22,7 @@ from app.services.preview_service import (
 router = APIRouter(prefix="/api/preview", tags=["preview"])
 
 
-@router.post("/", response_model=PreviewResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=PreviewResponse, status_code=status.HTTP_201_CREATED)
 async def create_preview(
     request: PreviewRequest,
     db: AsyncSession = Depends(get_db),

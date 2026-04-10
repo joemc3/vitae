@@ -107,7 +107,7 @@ async def generate_targeted(
     return _to_response(site)
 
 
-@router.get("/", response_model=list[SiteResponse])
+@router.get("", response_model=list[SiteResponse])
 async def list_sites(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),

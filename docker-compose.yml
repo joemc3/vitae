@@ -102,11 +102,14 @@ services:
       dockerfile: Dockerfile
       target: dev
     profiles: ["dev"]
+    environment:
+      VITE_API_PROXY_TARGET: http://api-dev:8000
     ports:
       - "5173:5173"
     volumes:
       - ./src-ui/src:/app/src
       - ./src-ui/public:/app/public
+      - ./src-ui/vite.config.ts:/app/vite.config.ts:ro
     depends_on:
       api-dev:
         condition: service_healthy

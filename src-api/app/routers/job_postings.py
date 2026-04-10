@@ -52,7 +52,7 @@ async def _get_selected_model(db: AsyncSession, user_id: uuid.UUID) -> str:
     return key_record.selected_model
 
 
-@router.post("/", response_model=JobPostingResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=JobPostingResponse, status_code=status.HTTP_201_CREATED)
 async def create_job_posting(
     request: JobPostingCreate,
     db: AsyncSession = Depends(get_db),
@@ -122,7 +122,7 @@ async def parse_job_posting(
     return JobPostingDraft(**draft)
 
 
-@router.get("/", response_model=list[JobPostingResponse])
+@router.get("", response_model=list[JobPostingResponse])
 async def list_job_postings(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user),
