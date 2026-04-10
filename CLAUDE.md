@@ -236,6 +236,8 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 ## Current Phase
 
+**Project renamed to Vitae** (2026-04-09). Cross-cutting rename from "Professional Website Builder" landed on `main` as a standalone mini-phase ahead of Phase 3e-B. Touched the Python API package, Node packages, Docker Compose, Postgres identity, HKDF encryption salt, admin UI branding, and all docs. The working directory on disk is still `professional-website-builder/` until the user renames it manually — see the post-rename checklist below.
+
 **Phase 3e-A (Polish Features) is complete.** Live preview system with two-tier approach (static theme showcase + SSR with real data), profile photo upload with Pillow resize, and conditional resume download link on portfolio sites. Admin UI includes theme gallery with screenshots, preview modal with iframe, and drag-and-drop photo upload on the profile page.
 
 **Previous phases:**
@@ -246,6 +248,26 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 - Phase 2b (Profile & Settings) — profile synthesis, API key management, document parsing
 
 **Phase 3e-B (Deployment)** is next.
+
+### Post-rename manual steps
+
+The following steps cannot be performed from inside the Claude session and are left to the user:
+
+1. **Rename the working directory on disk.** The Docker Compose project name is derived from the directory name, so renaming the directory also gives the stack a fresh set of volumes under the `vitae_*` prefix.
+   ```bash
+   docker compose --profile dev down -v    # if anything is running
+   cd ..
+   mv professional-website-builder vitae
+   cd vitae
+   docker compose --profile dev up --build -d
+   curl -sf http://localhost:8000/health   # expect {"status":"ok","database":"connected"}
+   ```
+2. **Optionally rename the GitHub repository and update the git remote URL:**
+   ```bash
+   git remote set-url origin <new-url>
+   ```
+3. **End-to-end smoke test** (deferred from Task 13 because Docker was not running during the rename session): after the stack is up, register a user, upload a document, synthesize a profile, and generate a portfolio site. Confirm nothing in the cross-service wiring was broken by the rename.
+4. **Follow-up rewrite:** `src-ui/README.md` and `src-generator/README.md` were only *surgically* renamed in the Vitae rename pass. Both are still severely out of date (Tauri references, wrong ports, wrong features) and should be rewritten as a follow-up task.
 
 ## CRITICAL NOTES
 
