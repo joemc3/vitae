@@ -249,9 +249,22 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 **Phase 3e-B (Deployment)** is next.
 
-### Post-rename manual steps
+### Post-rename verification results
 
-The following steps cannot be performed from inside the Claude session and are left to the user:
+The rename was verified end-to-end in Docker: `/health` OK, all 8 tables in the `vitae` DB owned by `vitae`, JWT auth, document upload + ARQ worker parsing, profile PUT, and site-generation job dispatch. The one layer that could not be verified is the Node-based static site generator itself — see "Known pre-existing gap" below.
+
+### Compose simplification (landed alongside the rename)
+
+`docker-compose.yml` was collapsed from a "base services + dev overlay via `extends`" pattern to a flat set of dev-profile services. The original pattern was latently broken: `docker compose --profile dev up` on a fresh volume would race the base `postgres` and `postgres-dev` services both trying to initdb the same `postgres-data` volume. The base services were templates for a prod config that didn't exist yet and will be designed properly in Phase 3e-B. Current compose only defines `postgres-dev`, `redis-dev`, `api-dev`, `worker-dev`, `frontend-dev`, `public-sites-dev`, all on the `dev` profile. `docker compose --profile dev up --build -d` is the only supported command for now.
+
+### Known pre-existing gap: generator not in worker container
+
+`src-api/Dockerfile` does not install Node.js and does not copy `src-generator/`. The worker's site generation path (`site_generator.py` calls `node /app/generator/generate.js`) fails in-container with `No such file or directory: 'node'`. This is unrelated to the rename and was present before it. It likely means site generation has historically been run with the API/worker on the host (where Node and `src-generator` are accessible), not in Docker. Phase 3e-B should either:
+- Install Node in the Dockerfile and copy `src-generator` in during build, or
+- Build a separate generator image, or
+- Document that site generation requires running the worker on the host.
+
+### Post-rename manual steps
 
 1. **Rename the working directory on disk.** The Docker Compose project name is derived from the directory name, so renaming the directory also gives the stack a fresh set of volumes under the `vitae_*` prefix.
    ```bash
@@ -266,8 +279,7 @@ The following steps cannot be performed from inside the Claude session and are l
    ```bash
    git remote set-url origin <new-url>
    ```
-3. **End-to-end smoke test** (deferred from Task 13 because Docker was not running during the rename session): after the stack is up, register a user, upload a document, synthesize a profile, and generate a portfolio site. Confirm nothing in the cross-service wiring was broken by the rename.
-4. **Follow-up rewrite:** `src-ui/README.md` and `src-generator/README.md` were only *surgically* renamed in the Vitae rename pass. Both are still severely out of date (Tauri references, wrong ports, wrong features) and should be rewritten as a follow-up task.
+3. **Follow-up rewrite:** `src-ui/README.md` and `src-generator/README.md` were only *surgically* renamed in the Vitae rename pass. Both are still severely out of date (Tauri references, wrong ports, wrong features) and should be rewritten as a follow-up task.
 
 ## CRITICAL NOTES
 

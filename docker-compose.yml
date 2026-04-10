@@ -1,8 +1,7 @@
 services:
-  # === Shared service definitions ===
-
-  postgres:
+  postgres-dev:
     image: postgres:16-alpine
+    profiles: ["dev"]
     environment:
       POSTGRES_DB: vitae
       POSTGRES_USER: vitae
@@ -14,125 +13,88 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "5432:5432"
     networks:
       - app-network
 
-  redis:
+  redis-dev:
     image: redis:7-alpine
+    profiles: ["dev"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "6379:6379"
     networks:
       - app-network
 
-  api:
+  api-dev:
     build:
       context: ./src-api
       dockerfile: Dockerfile
+    profiles: ["dev"]
     depends_on:
-      postgres:
+      postgres-dev:
         condition: service_healthy
-      redis:
+      redis-dev:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres:5432/vitae
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres-dev:5432/vitae
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://redis-dev:6379
       UPLOAD_DIR: /data/uploads
       SITE_URL: ${SITE_URL:-http://localhost:8080}
       ADMIN_URL: ${ADMIN_URL:-http://localhost:5173}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_LEVEL: debug
       GENERATION_DIR: /data/generation
       OUTPUT_DIR: /data/output
     volumes:
+      - ./src-api/app:/app/app
+      - ./src-api/migrations:/app/migrations
       - uploads-data:/data/uploads
+    ports:
+      - "8000:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
+    command: ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     networks:
       - app-network
 
-  worker:
+  worker-dev:
     build:
       context: ./src-api
       dockerfile: Dockerfile
+    profiles: ["dev"]
     command: ["uv", "run", "arq", "app.worker.WorkerSettings"]
     depends_on:
-      postgres:
+      postgres-dev:
         condition: service_healthy
-      redis:
+      redis-dev:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres:5432/vitae
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres-dev:5432/vitae
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://redis-dev:6379
       UPLOAD_DIR: /data/uploads
-      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_LEVEL: debug
       GENERATION_DIR: /data/generation
       OUTPUT_DIR: /data/output
     volumes:
+      - ./src-api/app:/app/app
       - uploads-data:/data/uploads
       - generation-data:/data/generation
       - output-data:/data/output
     networks:
       - app-network
-
-  public-sites:
-    image: nginx:alpine
-    volumes:
-      - output-data:/data/output:ro
-      - ./nginx/sites.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - app-network
-
-  # === Dev profile ===
-
-  postgres-dev:
-    extends:
-      service: postgres
-    profiles: ["dev"]
-    ports:
-      - "5432:5432"
-
-  redis-dev:
-    extends:
-      service: redis
-    profiles: ["dev"]
-    ports:
-      - "6379:6379"
-
-  api-dev:
-    extends:
-      service: api
-    profiles: ["dev"]
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./src-api/app:/app/app
-      - ./src-api/migrations:/app/migrations
-      - uploads-data:/data/uploads
-    environment:
-      LOG_LEVEL: debug
-    command: ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-
-  worker-dev:
-    extends:
-      service: worker
-    profiles: ["dev"]
-    volumes:
-      - ./src-api/app:/app/app
-      - uploads-data:/data/uploads
-      - generation-data:/data/generation
-      - output-data:/data/output
-    environment:
-      LOG_LEVEL: debug
 
   frontend-dev:
     build:
@@ -152,11 +114,15 @@ services:
       - app-network
 
   public-sites-dev:
-    extends:
-      service: public-sites
+    image: nginx:alpine
     profiles: ["dev"]
+    volumes:
+      - output-data:/data/output:ro
+      - ./nginx/sites.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - "8080:80"
+    networks:
+      - app-network
 
 volumes:
   postgres-data:
