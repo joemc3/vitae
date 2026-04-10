@@ -147,9 +147,9 @@ Create `src-api/pyproject.toml`:
 
 ```toml
 [project]
-name = "professional-website-builder-api"
+name = "vitae-api"
 version = "0.1.0"
-description = "REST API for Professional Website Builder"
+description = "REST API for Vitae"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",
@@ -211,7 +211,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql+asyncpg://pwbuser:pwbpass@localhost:5432/professional_website_builder"
+    database_url: str = "postgresql+asyncpg://vitae:vitaepass@localhost:5432/vitae"
 
     # Auth
     jwt_secret: str = "change-me-in-production"
@@ -245,7 +245,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.1.0",
 )
 
@@ -546,7 +546,7 @@ from app.config import settings
 from app.database import async_session_factory
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.1.0",
 )
 
@@ -893,7 +893,7 @@ from app.database import async_session_factory
 from app.routers import auth
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.1.0",
 )
 
@@ -1156,13 +1156,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: professional_website_builder
-      POSTGRES_USER: pwbuser
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pwbpass}
+      POSTGRES_DB: vitae
+      POSTGRES_USER: vitae
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vitaepass}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pwbuser -d professional_website_builder"]
+      test: ["CMD-SHELL", "pg_isready -U vitae -d vitae"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -1178,7 +1178,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://pwbuser:${POSTGRES_PASSWORD:-pwbpass}@postgres:5432/professional_website_builder
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres:5432/vitae
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
       SITE_URL: ${SITE_URL:-http://localhost:8080}
@@ -1352,7 +1352,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.1.0",
     lifespan=lifespan,
 )
@@ -1391,7 +1391,7 @@ sleep 10
 # Check API logs for migration output
 docker compose logs api-dev 2>&1 | head -20
 # Verify the users table exists
-docker compose exec postgres psql -U pwbuser -d professional_website_builder -c "\dt"
+docker compose exec postgres psql -U vitae -d vitae -c "\dt"
 ```
 
 Expected: `users` table appears in the table listing.
@@ -1490,13 +1490,13 @@ Replace `.env.example` contents:
 
 ```bash
 # =============================================================================
-# Professional Website Builder — Environment Configuration
+# Vitae — Environment Configuration
 # =============================================================================
 # Copy this file to .env and fill in your values.
 # Never commit .env to git.
 
 # --- Database ---
-POSTGRES_PASSWORD=pwbpass
+POSTGRES_PASSWORD=vitaepass
 
 # --- Security ---
 # Generate with: python -c "import secrets; print(secrets.token_urlsafe(32))"

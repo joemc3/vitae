@@ -79,7 +79,7 @@ src-ui/src/
 - [ ] **Step 1: Install TanStack Query and other dependencies**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npm install @tanstack/react-query
 npm install -D @types/node
 ```
@@ -87,7 +87,7 @@ npm install -D @types/node
 - [ ] **Step 2: Initialize shadcn/ui**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx shadcn@latest init
 ```
 
@@ -101,7 +101,7 @@ This creates `components.json`, updates `tailwind.config.js` with shadcn presets
 - [ ] **Step 3: Install shadcn components**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx shadcn@latest add button input label textarea card table dialog tabs badge skeleton dropdown-menu select tooltip separator sheet switch alert scroll-area
 ```
 
@@ -140,8 +140,8 @@ export default defineConfig({
 - [ ] **Step 5: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/package.json src-ui/package-lock.json src-ui/components.json src-ui/tailwind.config.js src-ui/tsconfig.json src-ui/vite.config.ts src-ui/src/lib/ src-ui/src/components/ui/ src-ui/src/index.css
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): install shadcn/ui, TanStack Query, fix API proxy"
+git -C /Users/joemc3/tmp/vitae add src-ui/package.json src-ui/package-lock.json src-ui/components.json src-ui/tailwind.config.js src-ui/tsconfig.json src-ui/vite.config.ts src-ui/src/lib/ src-ui/src/components/ui/ src-ui/src/index.css
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): install shadcn/ui, TanStack Query, fix API proxy"
 ```
 
 ---
@@ -425,15 +425,15 @@ export interface TestConnectionResponse {
 - [ ] **Step 2: Delete old types file**
 
 ```bash
-rm /Users/joemc3/tmp/professional-website-builder/src-ui/src/types/portfolio.ts
+rm /Users/joemc3/tmp/vitae/src-ui/src/types/portfolio.ts
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/types/api.ts
-git -C /Users/joemc3/tmp/professional-website-builder rm src-ui/src/types/portfolio.ts
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add API types matching backend schemas, remove old types"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/types/api.ts
+git -C /Users/joemc3/tmp/vitae rm src-ui/src/types/portfolio.ts
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add API types matching backend schemas, remove old types"
 ```
 
 ---
@@ -748,15 +748,15 @@ export async function testConnection(
 - [ ] **Step 2: Delete old utils/tauri.ts**
 
 ```bash
-rm /Users/joemc3/tmp/professional-website-builder/src-ui/src/utils/tauri.ts
+rm /Users/joemc3/tmp/vitae/src-ui/src/utils/tauri.ts
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/services/api.ts
-git -C /Users/joemc3/tmp/professional-website-builder rm src-ui/src/utils/tauri.ts
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): rewrite API client for current endpoints, remove tauri utils"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/services/api.ts
+git -C /Users/joemc3/tmp/vitae rm src-ui/src/utils/tauri.ts
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): rewrite API client for current endpoints, remove tauri utils"
 ```
 
 ---
@@ -1078,8 +1078,8 @@ export function useTestConnection() {
 - [ ] **Step 6: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/hooks/
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add TanStack Query hooks for all API resources"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/hooks/
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add TanStack Query hooks for all API resources"
 ```
 
 ---
@@ -1245,8 +1245,8 @@ export function useAuth() {
 - [ ] **Step 4: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/providers/ src-ui/src/hooks/use-theme.ts src-ui/src/contexts/auth-context.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add theme provider, rewrite auth context"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/providers/ src-ui/src/hooks/use-theme.ts src-ui/src/contexts/auth-context.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add theme provider, rewrite auth context"
 ```
 
 ---
@@ -1319,7 +1319,7 @@ function SidebarNav() {
   return (
     <div className="flex h-full w-64 flex-col border-r bg-card">
       <div className="p-6">
-        <h1 className="text-lg font-semibold tracking-tight">PWB Admin</h1>
+        <h1 className="text-lg font-semibold tracking-tight">Vitae Admin</h1>
       </div>
 
       <nav className="flex-1 space-y-1 px-3">
@@ -1378,7 +1378,7 @@ export function AppLayout() {
             <SidebarNav />
           </SheetContent>
         </Sheet>
-        <h1 className="ml-3 text-lg font-semibold">PWB Admin</h1>
+        <h1 className="ml-3 text-lg font-semibold">Vitae Admin</h1>
       </div>
 
       {/* Main content */}
@@ -1573,7 +1573,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 - [ ] **Step 5: Delete old files**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 rm -f src/App.css
 rm -f src/components/FileIngestion.tsx src/components/MainEditor.tsx src/components/ThemeSelection.tsx src/components/GenerationSuccess.tsx src/components/Settings.tsx src/components/Login.tsx src/components/Register.tsx src/components/ProtectedRoute.tsx
 ```
@@ -1581,14 +1581,14 @@ rm -f src/components/FileIngestion.tsx src/components/MainEditor.tsx src/compone
 - [ ] **Step 6: Install lucide-react icons**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npm install lucide-react
 ```
 
 - [ ] **Step 7: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
@@ -1597,10 +1597,10 @@ Expected: compiles with no errors.
 - [ ] **Step 8: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/
-git -C /Users/joemc3/tmp/professional-website-builder rm src-ui/src/App.css src-ui/src/components/FileIngestion.tsx src-ui/src/components/MainEditor.tsx src-ui/src/components/ThemeSelection.tsx src-ui/src/components/GenerationSuccess.tsx src-ui/src/components/Settings.tsx src-ui/src/components/Login.tsx src-ui/src/components/Register.tsx src-ui/src/components/ProtectedRoute.tsx
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/package.json src-ui/package-lock.json
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): app shell with sidebar layout, routing, dark mode, placeholder pages"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/
+git -C /Users/joemc3/tmp/vitae rm src-ui/src/App.css src-ui/src/components/FileIngestion.tsx src-ui/src/components/MainEditor.tsx src-ui/src/components/ThemeSelection.tsx src-ui/src/components/GenerationSuccess.tsx src-ui/src/components/Settings.tsx src-ui/src/components/Login.tsx src-ui/src/components/Register.tsx src-ui/src/components/ProtectedRoute.tsx
+git -C /Users/joemc3/tmp/vitae add src-ui/package.json src-ui/package-lock.json
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): app shell with sidebar layout, routing, dark mode, placeholder pages"
 ```
 
 ---
@@ -1820,15 +1820,15 @@ export default function RegisterPage() {
 - [ ] **Step 3: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/login.tsx src-ui/src/pages/register.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build login and register pages with shadcn"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/login.tsx src-ui/src/pages/register.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build login and register pages with shadcn"
 ```
 
 ---
@@ -2092,15 +2092,15 @@ export default function DocumentsPage() {
 - [ ] **Step 2: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/documents.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build documents page with upload, list, expand, delete"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/documents.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build documents page with upload, list, expand, delete"
 ```
 
 ---
@@ -2496,15 +2496,15 @@ export default function ProfilePage() {
 - [ ] **Step 2: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/profile.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build profile page with inline editing and SSE synthesis"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/profile.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build profile page with inline editing and SSE synthesis"
 ```
 
 ---
@@ -2677,15 +2677,15 @@ export default function JobPostingsPage() {
 - [ ] **Step 2: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/job-postings.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build job postings list page with table and delete"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/job-postings.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build job postings list page with table and delete"
 ```
 
 ---
@@ -3055,15 +3055,15 @@ export default function JobPostingEditPage() {
 - [ ] **Step 3: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/job-posting-new.tsx src-ui/src/pages/job-posting-edit.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build job posting create (tabbed) and edit pages"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/job-posting-new.tsx src-ui/src/pages/job-posting-edit.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build job posting create (tabbed) and edit pages"
 ```
 
 ---
@@ -3518,15 +3518,15 @@ export default function SitesPage() {
 - [ ] **Step 2: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/sites.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build sites page with generation dialogs, polling, stale detection"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/sites.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build sites page with generation dialogs, polling, stale detection"
 ```
 
 ---
@@ -3818,15 +3818,15 @@ export default function SettingsPage() {
 - [ ] **Step 2: Verify build compiles**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit
 ```
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/pages/settings.tsx
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build settings page with username, API keys, model selection"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/pages/settings.tsx
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): build settings page with username, API keys, model selection"
 ```
 
 ---
@@ -3841,9 +3841,9 @@ git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): build
 - [ ] **Step 1: Verify all old files are removed**
 
 ```bash
-ls /Users/joemc3/tmp/professional-website-builder/src-ui/src/components/*.tsx 2>/dev/null
-ls /Users/joemc3/tmp/professional-website-builder/src-ui/src/utils/ 2>/dev/null
-ls /Users/joemc3/tmp/professional-website-builder/src-ui/src/App.css 2>/dev/null
+ls /Users/joemc3/tmp/vitae/src-ui/src/components/*.tsx 2>/dev/null
+ls /Users/joemc3/tmp/vitae/src-ui/src/utils/ 2>/dev/null
+ls /Users/joemc3/tmp/vitae/src-ui/src/App.css 2>/dev/null
 ```
 
 All three should return "No such file or directory" or empty. If any old files remain, delete them.
@@ -3855,7 +3855,7 @@ Read `src-ui/src/index.css` and remove old hand-written `.btn-primary`, `.btn-se
 - [ ] **Step 3: Run full build**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npx tsc --noEmit && npm run build
 ```
 
@@ -3871,7 +3871,7 @@ If any TypeScript or build errors, fix them. Common issues:
 - [ ] **Step 5: Run lint**
 
 ```bash
-cd /Users/joemc3/tmp/professional-website-builder/src-ui
+cd /Users/joemc3/tmp/vitae/src-ui
 npm run lint
 ```
 
@@ -3880,8 +3880,8 @@ Fix any lint errors.
 - [ ] **Step 6: Commit final cleanup**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "chore(ui): final cleanup — remove old styles, verify build"
+git -C /Users/joemc3/tmp/vitae add src-ui/
+git -C /Users/joemc3/tmp/vitae commit -m "chore(ui): final cleanup — remove old styles, verify build"
 ```
 
 ---
@@ -3889,7 +3889,7 @@ git -C /Users/joemc3/tmp/professional-website-builder commit -m "chore(ui): fina
 ## Task 15: Update Documentation
 
 **Files:**
-- Modify: `/Users/joemc3/tmp/professional-website-builder/CLAUDE.md`
+- Modify: `/Users/joemc3/tmp/vitae/CLAUDE.md`
 
 - [ ] **Step 1: Update CLAUDE.md with Phase 3b completion status**
 
@@ -3898,6 +3898,6 @@ Update the "Current Phase" section in CLAUDE.md to reflect Phase 3b completion. 
 - [ ] **Step 2: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add CLAUDE.md
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "docs: update CLAUDE.md for Phase 3b completion"
+git -C /Users/joemc3/tmp/vitae add CLAUDE.md
+git -C /Users/joemc3/tmp/vitae commit -m "docs: update CLAUDE.md for Phase 3b completion"
 ```

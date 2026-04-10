@@ -109,8 +109,8 @@ Run: `cd src-api && uv run alembic upgrade head` (or verify via unit tests that 
 - [ ] **Step 4: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/models/profile.py src-api/migrations/versions/011_profile_photo_path.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(db): add photo_path column to profiles table"
+git -C /Users/joemc3/tmp/vitae add src-api/app/models/profile.py src-api/migrations/versions/011_profile_photo_path.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(db): add photo_path column to profiles table"
 ```
 
 ---
@@ -349,8 +349,8 @@ Expected: All PASS
 - [ ] **Step 6: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/services/photo_service.py src-api/tests/unit/test_photo_service.py src-api/pyproject.toml src-api/uv.lock
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(api): add photo service with validation, resize, and storage"
+git -C /Users/joemc3/tmp/vitae add src-api/app/services/photo_service.py src-api/tests/unit/test_photo_service.py src-api/pyproject.toml src-api/uv.lock
+git -C /Users/joemc3/tmp/vitae commit -m "feat(api): add photo service with validation, resize, and storage"
 ```
 
 ---
@@ -505,8 +505,8 @@ Expected: All PASS
 - [ ] **Step 7: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/routers/profile.py src-api/app/schemas/profile.py src-api/tests/unit/test_photo_router.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(api): add photo upload and delete endpoints"
+git -C /Users/joemc3/tmp/vitae add src-api/app/routers/profile.py src-api/app/schemas/profile.py src-api/tests/unit/test_photo_router.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(api): add photo upload and delete endpoints"
 ```
 
 ---
@@ -665,8 +665,8 @@ Expected: All PASS
 - [ ] **Step 8: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/services/profile_transform.py src-api/app/services/site_generator.py src-api/app/worker.py src-api/tests/unit/test_profile_transform.py src-generator/app/types/portfolio.ts
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat: add hasResume flag to site generation data contract"
+git -C /Users/joemc3/tmp/vitae add src-api/app/services/profile_transform.py src-api/app/services/site_generator.py src-api/app/worker.py src-api/tests/unit/test_profile_transform.py src-generator/app/types/portfolio.ts
+git -C /Users/joemc3/tmp/vitae commit -m "feat: add hasResume flag to site generation data contract"
 ```
 
 ---
@@ -711,8 +711,8 @@ Expected: All PASS
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/worker.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(worker): copy profile photo to site output during generation"
+git -C /Users/joemc3/tmp/vitae add src-api/app/worker.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(worker): copy profile photo to site output during generation"
 ```
 
 ---
@@ -796,8 +796,8 @@ Expected: Build succeeds (using default sample data)
 - [ ] **Step 7: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-generator/app/themes/
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(themes): add conditional resume download link to all themes"
+git -C /Users/joemc3/tmp/vitae add src-generator/app/themes/
+git -C /Users/joemc3/tmp/vitae commit -m "feat(themes): add conditional resume download link to all themes"
 ```
 
 ---
@@ -1029,8 +1029,8 @@ Expected: All PASS
 - [ ] **Step 6: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/services/preview_service.py src-api/tests/unit/test_preview_service.py src-api/app/config.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(api): add preview service with generator lifecycle management"
+git -C /Users/joemc3/tmp/vitae add src-api/app/services/preview_service.py src-api/tests/unit/test_preview_service.py src-api/app/config.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(api): add preview service with generator lifecycle management"
 ```
 
 ---
@@ -1256,8 +1256,8 @@ Expected: All PASS
 - [ ] **Step 8: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-api/app/schemas/preview.py src-api/app/routers/preview.py src-api/tests/unit/test_preview_router.py src-api/app/main.py src-api/pyproject.toml src-api/uv.lock
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(api): add preview endpoints with generator proxy"
+git -C /Users/joemc3/tmp/vitae add src-api/app/schemas/preview.py src-api/app/routers/preview.py src-api/tests/unit/test_preview_router.py src-api/app/main.py src-api/pyproject.toml src-api/uv.lock
+git -C /Users/joemc3/tmp/vitae commit -m "feat(api): add preview endpoints with generator proxy"
 ```
 
 ---
@@ -1371,8 +1371,8 @@ Run: `cd src-generator && npx next dev --port 3002` (start, verify no errors, th
 - [ ] **Step 4: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-generator/app/preview/ src-generator/app/lib/loadPortfolioData.ts
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(generator): add preview route with per-ID data loading"
+git -C /Users/joemc3/tmp/vitae add src-generator/app/preview/ src-generator/app/lib/loadPortfolioData.ts
+git -C /Users/joemc3/tmp/vitae commit -m "feat(generator): add preview route with per-ID data loading"
 ```
 
 ---
@@ -1633,8 +1633,8 @@ Expected: Build succeeds
 - [ ] **Step 8: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/components/PhotoUpload.tsx src-ui/src/pages/profile.tsx src-ui/src/services/api.ts src-ui/src/types/api.ts src-ui/src/hooks/use-profile.ts src-api/app/routers/profile.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add profile photo upload with drag-and-drop"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/components/PhotoUpload.tsx src-ui/src/pages/profile.tsx src-ui/src/services/api.ts src-ui/src/types/api.ts src-ui/src/hooks/use-profile.ts src-api/app/routers/profile.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add profile photo upload with drag-and-drop"
 ```
 
 ---
@@ -1982,8 +1982,8 @@ Expected: Build succeeds
 - [ ] **Step 9: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/src/components/ThemeGallery.tsx src-ui/src/components/PreviewModal.tsx src-ui/src/hooks/use-preview.ts src-ui/src/pages/sites.tsx src-ui/src/services/api.ts src-ui/src/types/api.ts src-api/app/routers/preview.py
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add theme gallery with live preview support"
+git -C /Users/joemc3/tmp/vitae add src-ui/src/components/ThemeGallery.tsx src-ui/src/components/PreviewModal.tsx src-ui/src/hooks/use-preview.ts src-ui/src/pages/sites.tsx src-ui/src/services/api.ts src-ui/src/types/api.ts src-api/app/routers/preview.py
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add theme gallery with live preview support"
 ```
 
 ---
@@ -2033,8 +2033,8 @@ The data should represent a senior software engineer to make the themes look sub
 - [ ] **Step 2: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-generator/sample-data/showcase.json
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(generator): add sample portfolio data for theme showcase screenshots"
+git -C /Users/joemc3/tmp/vitae add src-generator/sample-data/showcase.json
+git -C /Users/joemc3/tmp/vitae commit -m "feat(generator): add sample portfolio data for theme showcase screenshots"
 ```
 
 ---
@@ -2078,8 +2078,8 @@ Optimize PNGs with `pngquant` or similar if available.
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add src-ui/public/showcases/
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "feat(ui): add theme showcase screenshots for gallery"
+git -C /Users/joemc3/tmp/vitae add src-ui/public/showcases/
+git -C /Users/joemc3/tmp/vitae commit -m "feat(ui): add theme showcase screenshots for gallery"
 ```
 
 ---
@@ -2134,8 +2134,8 @@ E2E testing was explicitly deferred from Phase 3e to keep that phase focused on 
 - [ ] **Step 3: Commit**
 
 ```bash
-git -C /Users/joemc3/tmp/professional-website-builder add CLAUDE.md docs/superpowers/specs/phase4-e2e-testing-scope.md
-git -C /Users/joemc3/tmp/professional-website-builder commit -m "docs: update CLAUDE.md for Phase 3e-A, document Phase 4 E2E scope"
+git -C /Users/joemc3/tmp/vitae add CLAUDE.md docs/superpowers/specs/phase4-e2e-testing-scope.md
+git -C /Users/joemc3/tmp/vitae commit -m "docs: update CLAUDE.md for Phase 3e-A, document Phase 4 E2E scope"
 ```
 
 ---

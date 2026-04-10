@@ -1,4 +1,4 @@
-# Professional Website Builder — Project Revival Design Spec
+# Vitae — Project Revival Design Spec
 
 **Date:** 2026-03-30
 **Status:** Approved

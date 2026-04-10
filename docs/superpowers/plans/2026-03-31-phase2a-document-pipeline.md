@@ -428,7 +428,7 @@ def _derive_key() -> bytes:
     hkdf = HKDF(
         algorithm=SHA256(),
         length=32,
-        salt=b"pwb-static-salt",
+        salt=b"vitae-static-salt",
         info=b"api-key-encryption",
     )
     return hkdf.derive(settings.secret_key.encode("utf-8"))
@@ -966,7 +966,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Professional Website Builder API",
+    title="Vitae API",
     version="0.2.0",
     lifespan=lifespan,
 )
@@ -1597,13 +1597,13 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: professional_website_builder
-      POSTGRES_USER: pwbuser
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pwbpass}
+      POSTGRES_DB: vitae
+      POSTGRES_USER: vitae
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vitaepass}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pwbuser -d professional_website_builder"]
+      test: ["CMD-SHELL", "pg_isready -U vitae -d vitae"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -1630,7 +1630,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://pwbuser:${POSTGRES_PASSWORD:-pwbpass}@postgres:5432/professional_website_builder
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres:5432/vitae
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
       REDIS_URL: redis://redis:6379
@@ -1661,7 +1661,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://pwbuser:${POSTGRES_PASSWORD:-pwbpass}@postgres:5432/professional_website_builder
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD:-vitaepass}@postgres:5432/vitae
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
       REDIS_URL: redis://redis:6379
       UPLOAD_DIR: /data/uploads
