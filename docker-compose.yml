@@ -33,8 +33,8 @@ services:
 
   api-dev:
     build:
-      context: ./src-api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src-api/Dockerfile
     profiles: ["dev"]
     depends_on:
       postgres-dev:
@@ -72,8 +72,8 @@ services:
 
   worker-dev:
     build:
-      context: ./src-api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src-api/Dockerfile
     profiles: ["dev"]
     command: ["uv", "run", "arq", "app.worker.WorkerSettings"]
     depends_on:
