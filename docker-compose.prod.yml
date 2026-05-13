@@ -1,0 +1,130 @@
+# Vitae production stack — lives at /opt/vitae/docker-compose.prod.yml on the VPS.
+# Synced from the repo by the GitHub Actions deploy job.
+#
+# Reads secrets from /opt/vitae/.env (POSTGRES_PASSWORD, JWT_SECRET, SECRET_KEY, SITE_URL, ADMIN_URL).
+# All routable services attach to the existing `pangolin` Docker network; Pangolin's admin UI
+# maps hostnames -> containers (no Traefik labels needed).
+
+services:
+  vitae-postgres:
+    image: postgres:16
+    container_name: vitae-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vitae
+      POSTGRES_USER: vitae
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+    volumes:
+      - vitae-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vitae -d vitae"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - vitae-internal
+
+  vitae-redis:
+    image: redis:7-alpine
+    container_name: vitae-redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitae-internal
+
+  vitae-api:
+    image: ghcr.io/joemc3/vitae-api:latest
+    container_name: vitae-api
+    restart: unless-stopped
+    depends_on:
+      vitae-postgres:
+        condition: service_healthy
+      vitae-redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD}@vitae-postgres:5432/vitae
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set in .env}
+      REDIS_URL: redis://vitae-redis:6379/0
+      SITE_URL: ${SITE_URL:?SITE_URL must be set in .env}
+      ADMIN_URL: ${ADMIN_URL:?ADMIN_URL must be set in .env}
+      CORS_ORIGINS: ${ADMIN_URL}
+      REGISTRATION_ENABLED: "false"
+      UPLOAD_DIR: /data/uploads
+      GENERATION_DIR: /data/generation
+      OUTPUT_DIR: /data/output
+      LOG_LEVEL: info
+    volumes:
+      - vitae-uploads:/data/uploads
+      - vitae-generation:/data/generation
+      - vitae-output:/data/output
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - vitae-internal
+      - pangolin
+    command: ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  vitae-worker:
+    image: ghcr.io/joemc3/vitae-api:latest
+    container_name: vitae-worker
+    restart: unless-stopped
+    depends_on:
+      vitae-postgres:
+        condition: service_healthy
+      vitae-redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://vitae:${POSTGRES_PASSWORD}@vitae-postgres:5432/vitae
+      SECRET_KEY: ${SECRET_KEY}
+      REDIS_URL: redis://vitae-redis:6379/0
+      SITE_URL: ${SITE_URL}
+      UPLOAD_DIR: /data/uploads
+      GENERATION_DIR: /data/generation
+      OUTPUT_DIR: /data/output
+      LOG_LEVEL: info
+    volumes:
+      - vitae-uploads:/data/uploads
+      - vitae-generation:/data/generation
+      - vitae-output:/data/output
+    networks:
+      - vitae-internal
+    command: ["uv", "run", "arq", "app.worker.WorkerSettings"]
+
+  vitae-ui:
+    image: ghcr.io/joemc3/vitae-ui:latest
+    container_name: vitae-ui
+    restart: unless-stopped
+    networks:
+      - pangolin
+
+  vitae-public-sites:
+    image: nginx:alpine
+    container_name: vitae-public-sites
+    restart: unless-stopped
+    volumes:
+      - vitae-output:/usr/share/nginx/html:ro
+      - ./public-sites.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - pangolin
+
+volumes:
+  vitae-postgres-data:
+  vitae-uploads:
+  vitae-generation:
+  vitae-output:
+
+networks:
+  vitae-internal:
+    driver: bridge
+  pangolin:
+    external: true
+    name: pangolin
