@@ -19,9 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg62-turbo libxml2 libffi8 shared-mime-info fonts-dejavu \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
+    && apt-get purge -y --auto-remove curl gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+# Pinned uv version for reproducible builds
+COPY --from=ghcr.io/astral-sh/uv:0.11.14 /uv /usr/local/bin/uv
 
 WORKDIR /app
 
