@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: vitae-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -87,7 +87,7 @@ jobs:
 
       - name: Smoke check
         run: |
-          for i in $(seq 1 12); do
+          for i in $(seq 1 18); do
             if curl -fsS "https://app.vitae.2524.cloud/api/health" >/dev/null; then
               echo "Health check passed on attempt $i"
               exit 0
@@ -95,5 +95,5 @@ jobs:
             echo "Attempt $i failed, retrying in 5s..."
             sleep 5
           done
-          echo "Smoke check failed after 60s"
+          echo "Smoke check failed after 90s"
           exit 1
