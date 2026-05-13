@@ -70,7 +70,7 @@ Public Sites (Nginx)  ←── serves ────┘
 
 ## Tech Stack
 
-- **API**: Python 3.12, FastAPI, Uvicorn, SQLAlchemy 2.0 (async), Alembic, Pydantic v2, Pillow (image processing), httpx (async HTTP client)
+- **API**: Python 3.13, FastAPI, Uvicorn, SQLAlchemy 2.0 (async), Alembic, Pydantic v2, Pillow (image processing), httpx (async HTTP client)
 - **Package management**: `uv` with committed `uv.lock`
 - **Auth**: JWT (`python-jose`) + bcrypt
 - **Database**: PostgreSQL 16 with `asyncpg`
@@ -186,6 +186,7 @@ See `.env.example` for the full list. Key variables:
 POSTGRES_PASSWORD=        # Database password
 SECRET_KEY=               # Encryption key (32+ chars)
 JWT_SECRET=               # JWT signing key (32+ chars)
+REGISTRATION_ENABLED=     # Public sign-up gate. Prod: false. Dev: true.
 
 # URLs (for CORS and link generation)
 SITE_URL=                 # Public sites base URL (e.g. https://resume.joe.com)
@@ -236,33 +237,18 @@ Current design spec: `docs/superpowers/specs/2026-03-30-project-revival-design.m
 
 ## Current Phase
 
-**Project renamed to Vitae** (2026-04-09). Cross-cutting rename from "Professional Website Builder" landed on `main` as a standalone mini-phase ahead of Phase 3e-B. Touched the Python API package, Node packages, Docker Compose, Postgres identity, HKDF encryption salt, admin UI branding, and all docs. Working directory, GitHub repo, and git remote are now all on `vitae`. `src-ui/README.md` and `src-generator/README.md` have been rewritten to match current reality as a follow-up.
-
-**Phase 3e-A (Polish Features) is complete.** Live preview system with two-tier approach (static theme showcase + SSR with real data), profile photo upload with Pillow resize, and conditional resume download link on portfolio sites. Admin UI includes theme gallery with screenshots, preview modal with iframe, and drag-and-drop photo upload on the profile page.
+**Phase 3e-B (Deployment) is complete.** Vitae deploys to a VPS behind Pangolin/Traefik via push-to-main GitHub Actions. The API/worker image now bundles Node 20 + the Next.js generator (closing the long-standing "Node not in worker" gap). Registration is disabled in prod by default (`REGISTRATION_ENABLED=false`); accounts are created via the `python -m app.scripts.create_user` CLI inside the running container. See `docs/deployment.md` for the deploy runbook.
 
 **Previous phases:**
+- Phase 3e-A (Polish Features) — live preview, profile photo upload, conditional resume download
 - Phase 3d (Resume PDF Generation) — LLM-tailored resumes with WeasyPrint, 6 theme templates, two-pass page fitting
 - Phase 3c (Theme Design) — 5 site themes with content primitives composition architecture
 - Phase 3b (Admin UI) — full React admin app rebuild with shadcn/ui
 - Phase 3a (Sites & Generator Wiring) — backend pipeline, job postings, site generation, public Nginx
 - Phase 2b (Profile & Settings) — profile synthesis, API key management, document parsing
+- Vitae rename (2026-04-09) — cross-cutting rename from "Professional Website Builder"
 
-**Phase 3e-B (Deployment)** is next.
-
-### Post-rename verification results
-
-The rename was verified end-to-end in Docker: `/health` OK, all 8 tables in the `vitae` DB owned by `vitae`, JWT auth, document upload + ARQ worker parsing, profile PUT, and site-generation job dispatch. The one layer that could not be verified is the Node-based static site generator itself — see "Known pre-existing gap" below.
-
-### Compose simplification (landed alongside the rename)
-
-`docker-compose.yml` was collapsed from a "base services + dev overlay via `extends`" pattern to a flat set of dev-profile services. The original pattern was latently broken: `docker compose --profile dev up` on a fresh volume would race the base `postgres` and `postgres-dev` services both trying to initdb the same `postgres-data` volume. The base services were templates for a prod config that didn't exist yet and will be designed properly in Phase 3e-B. Current compose only defines `postgres-dev`, `redis-dev`, `api-dev`, `worker-dev`, `frontend-dev`, `public-sites-dev`, all on the `dev` profile. `docker compose --profile dev up --build -d` is the only supported command for now.
-
-### Known pre-existing gap: generator not in worker container
-
-`src-api/Dockerfile` does not install Node.js and does not copy `src-generator/`. The worker's site generation path (`site_generator.py` calls `node /app/generator/generate.js`) fails in-container with `No such file or directory: 'node'`. This is unrelated to the rename and was present before it. It likely means site generation has historically been run with the API/worker on the host (where Node and `src-generator` are accessible), not in Docker. Phase 3e-B should either:
-- Install Node in the Dockerfile and copy `src-generator` in during build, or
-- Build a separate generator image, or
-- Document that site generation requires running the worker on the host.
+**Phase 4 (End-to-end testing)** is deferred. See `docs/future-work.md` for all deferred items.
 
 ## CRITICAL NOTES
 

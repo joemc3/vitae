@@ -20,7 +20,7 @@ Vitae uses a **document repository model**: you upload many documents over time 
 
 | Layer | Technology |
 |-------|------------|
-| API | Python 3.12 / FastAPI |
+| API | Python 3.13 / FastAPI |
 | Admin app | React 18 / Vite |
 | Site generator | Next.js 14 |
 | Database | PostgreSQL 16 |
@@ -59,6 +59,10 @@ This starts the API, PostgreSQL, Redis, and the ARQ background worker.
 └── docker-compose.yml
 ```
 
+## Deployment
+
+Vitae deploys to a VPS via push-to-main GitHub Actions. See [`docs/deployment.md`](docs/deployment.md) for the one-time bootstrap procedure and steady-state operations (logs, rollback, backups, user creation).
+
 ## Development
 
 ### Running Tests
@@ -85,17 +89,24 @@ See `.env.example` for the full list.
 
 ## Current Status
 
-**Phase 2a is complete**: document repository — upload, parse (5 formats), background processing via ARQ + Redis, API key management with AES-256-GCM encryption.
+**Phase 3e-B (Deployment) is complete.** Vitae deploys to a VPS behind Pangolin/Traefik via push-to-main GitHub Actions. Registration is gated behind `REGISTRATION_ENABLED` — small invited group only at launch; public sign-up is tracked in [`docs/future-work.md`](docs/future-work.md).
 
-Phase 2b is next: LiteLLM integration and profile synthesis. See `docs/` for the full design spec.
+Prior phases (1, 2a, 2b, 3a–3e-A) are all complete. Phase 4 (end-to-end browser testing) is deliberately deferred.
+
+See `docs/superpowers/specs/` for design specs and `docs/superpowers/plans/` for implementation plans.
 
 ## Roadmap
 
-- Phase 1: Foundation (complete)
-- Phase 2a: Document Repository & Parsing (complete)
-- Phase 2b: LiteLLM & Profile Synthesis
-- Phase 3: Sites & Resumes
-- Phase 4: Production Ready
+- Phase 1: Foundation ✅
+- Phase 2a: Document Repository & Parsing ✅
+- Phase 2b: LiteLLM & Profile Synthesis ✅
+- Phase 3a: Sites & Generator Wiring ✅
+- Phase 3b: Admin UI Rebuild ✅
+- Phase 3c: Site Themes ✅
+- Phase 3d: Resume PDF Generation ✅
+- Phase 3e-A: Polish Features ✅
+- Phase 3e-B: Deployment ✅
+- Phase 4: End-to-end testing (deferred — see `docs/future-work.md`)
 
 ## License
 
