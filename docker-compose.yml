@@ -53,6 +53,7 @@ services:
       LOG_LEVEL: debug
       GENERATION_DIR: /data/generation
       OUTPUT_DIR: /data/output
+      REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
     volumes:
       - ./src-api/app:/app/app
       - ./src-api/migrations:/app/migrations
@@ -88,6 +89,7 @@ services:
       LOG_LEVEL: debug
       GENERATION_DIR: /data/generation
       OUTPUT_DIR: /data/output
+      REGISTRATION_ENABLED: ${REGISTRATION_ENABLED:-true}
     volumes:
       - ./src-api/app:/app/app
       - uploads-data:/data/uploads

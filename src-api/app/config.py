@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     # Ollama
     ollama_url: str = "http://localhost:11434"
 
+    # Registration gate (prod default: False; dev compose sets to True)
+    registration_enabled: bool = False
+
     # Site generation
     generation_dir: str = "/data/generation"
     output_dir: str = "/data/output"
